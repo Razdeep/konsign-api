@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/java/jre
+FROM adoptopenjdk/openjdk11:latest
 
 RUN mkdir -p /app
 
