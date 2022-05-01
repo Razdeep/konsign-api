@@ -32,7 +32,7 @@ jobs:
           # Username used to log against the Docker registry
           username: razdeep
           # Password or personal access token used to log against the Docker registry
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       - run: docker build -t razdeep/konsign-api:${{ github.ref_name }}.${{ github.sha }} .
       - run: docker push razdeep/konsign-api:${{ github.ref_name }}.${{ github.sha }}
 
@@ -41,6 +41,6 @@ jobs:
         # This action rebuild the docker image again (though it is built earlier once) and pushes to heroku
         uses: gonuit/heroku-docker-deploy@v1.3.3
         with:
-          heroku_app_name: konsign
+          heroku_app_name: konsign-api
           email: rrajdeeproychowdhury@gmail.com
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
