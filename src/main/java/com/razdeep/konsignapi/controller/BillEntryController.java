@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import com.razdeep.konsignapi.model.Bill;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +19,13 @@ public class BillEntryController {
         body.put("message", "received");
         ResponseEntity<String> res = new ResponseEntity<>(gson.toJson(body),
                 bill.anyFieldEmpty() ? HttpStatus.NOT_ACCEPTABLE : HttpStatus.OK);
+        return res;
+    }
+
+    @GetMapping(value = "/")
+    public ResponseEntity<String> welcome() {
+        ResponseEntity<String> res = new ResponseEntity<>("Welcome",
+                HttpStatus.OK);
         return res;
     }
 }

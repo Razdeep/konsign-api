@@ -1,7 +1,8 @@
 package com.razdeep.konsignapi.service;
 
+import com.razdeep.konsignapi.model.KonsignUser;
 import com.razdeep.konsignapi.model.KonsignUserDetails;
-import com.razdeep.konsignapi.repository.KonsignUserDetailsRepository;
+import com.razdeep.konsignapi.repository.KonsignUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,13 +15,13 @@ import java.util.Optional;
 public class KonsignUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private KonsignUserDetailsRepository konsignUserDetailsRepository;
+    private KonsignUserRepository konsignUserRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<KonsignUserDetails> konsignUserDetails = konsignUserDetailsRepository.findKonsignUserDetailsByUsername(username);
-        if (konsignUserDetails.isPresent()) {
-            return konsignUserDetails.get();
+        Optional<KonsignUser> konsignUser = konsignUserRepository.findKonsignUserByUsername(username);
+        if (konsignUser.isPresent()) {
+            return new KonsignUserDetails(konsignUser.get());
         }
         return null;
     }
