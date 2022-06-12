@@ -35,8 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/**")
+                .hasAnyRole("ROLE_USER")
+                .and()
+                .formLogin()
                 .and()
                 .httpBasic();
     }
@@ -50,5 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    PasswordEncoder getPasswordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
 }

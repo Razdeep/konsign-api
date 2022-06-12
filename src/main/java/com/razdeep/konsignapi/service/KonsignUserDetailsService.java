@@ -20,9 +20,9 @@ public class KonsignUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<KonsignUser> konsignUser = konsignUserRepository.findKonsignUserByUsername(username);
-        if (konsignUser.isPresent()) {
-            return new KonsignUserDetails(konsignUser.get());
+        if (!konsignUser.isPresent()) {
+            throw new UsernameNotFoundException("user name not found");
         }
-        return null;
+        return new KonsignUserDetails(konsignUser.get());
     }
 }
