@@ -1,4 +1,4 @@
-package com.razdeep.konsignapi.model;
+package com.razdeep.konsignapi.entity;
 
 import lombok.Data;
 

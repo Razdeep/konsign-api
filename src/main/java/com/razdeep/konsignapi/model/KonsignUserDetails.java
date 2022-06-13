@@ -1,5 +1,6 @@
 package com.razdeep.konsignapi.model;
 
+import com.razdeep.konsignapi.entity.KonsignUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

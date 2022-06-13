@@ -1,6 +1,6 @@
 package com.razdeep.konsignapi.repository;
 
-import com.razdeep.konsignapi.model.KonsignUser;
+import com.razdeep.konsignapi.entity.KonsignUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

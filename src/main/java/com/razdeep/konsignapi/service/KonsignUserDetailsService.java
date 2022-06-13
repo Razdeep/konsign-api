@@ -1,6 +1,6 @@
 package com.razdeep.konsignapi.service;
 
-import com.razdeep.konsignapi.model.KonsignUser;
+import com.razdeep.konsignapi.entity.KonsignUser;
 import com.razdeep.konsignapi.model.KonsignUserDetails;
 import com.razdeep.konsignapi.repository.KonsignUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
