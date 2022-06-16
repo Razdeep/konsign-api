@@ -1,8 +1,8 @@
 package com.razdeep.konsignapi.model;
 
-import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@AllArgsConstructor
+@Data
 public class Bill {
     String supplierName;
     String buyerName;
