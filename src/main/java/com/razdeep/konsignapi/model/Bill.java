@@ -2,6 +2,8 @@ package com.razdeep.konsignapi.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class Bill {
     String supplierName;
@@ -10,12 +12,13 @@ public class Bill {
     String billDate;
     String transport;
     String lrDate;
-//    String lrPm = "";
-    String billAmount;
+
+    List<LrPm> lrPmList;
+    Float billAmount;
 
     public boolean anyFieldEmpty() {
         return supplierName == "" || buyerName == "" ||
                 billNo == "" || billDate == "" || transport == "" ||
-                lrDate == "" || billAmount == "";
+                lrDate == "" || billAmount == 0.f;
     }
 }

@@ -2,10 +2,11 @@ package com.razdeep.konsignapi.entity;
 
 import com.razdeep.konsignapi.model.Bill;
 import lombok.Data;
+import lombok.val;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "bill")
@@ -18,7 +19,10 @@ public class BillEntity {
     String billDate;
     String transport;
     String lrDate;
-    String billAmount;
+    Float billAmount;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    List<LrPmEntity> lrPmEntityList;
 
     public BillEntity() {}
 
@@ -29,6 +33,14 @@ public class BillEntity {
         this.billDate = bill.getBillDate();
         this.transport = bill.getTransport();
         this.lrDate = bill.getLrDate();
-        this.billAmount = getBillAmount();
+        this.billAmount = bill.getBillAmount();
+        this.lrPmEntityList = new ArrayList<>();
+        if (bill.getLrPmList() != null) {
+            val lrPmList = bill.getLrPmList();
+            for (int i = 0; i < lrPmList.size(); ++i) {
+                val lrPmEntity = new LrPmEntity(lrPmList.get(i));
+                lrPmEntityList.add(lrPmEntity);
+            }
+        }
     }
 }
