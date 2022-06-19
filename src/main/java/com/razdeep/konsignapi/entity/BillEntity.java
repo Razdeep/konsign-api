@@ -21,7 +21,7 @@ public class BillEntity {
     String lrDate;
     Float billAmount;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "billEntry")
     List<LrPmEntity> lrPmEntityList;
 
     public BillEntity() {}
@@ -39,6 +39,7 @@ public class BillEntity {
             val lrPmList = bill.getLrPmList();
             for (int i = 0; i < lrPmList.size(); ++i) {
                 val lrPmEntity = new LrPmEntity(lrPmList.get(i));
+                lrPmEntity.setBillEntry(this);
                 lrPmEntityList.add(lrPmEntity);
             }
         }

@@ -12,6 +12,10 @@ public class LrPmEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int lrPmId;
+
+    @ManyToOne
+    @JoinColumn(name="fk_bill_no", nullable = false)
+    private BillEntity billEntry;
     private String lr, pm;
 
     public LrPmEntity() {}
