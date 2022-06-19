@@ -2,6 +2,8 @@ package com.razdeep.konsignapi.controller;
 
 import com.razdeep.konsignapi.model.AuthenticationRequest;
 import com.razdeep.konsignapi.model.AuthenticationResponse;
+import com.razdeep.konsignapi.model.UserRegistration;
+import com.razdeep.konsignapi.service.AuthenticationService;
 import com.razdeep.konsignapi.service.JwtUtilService;
 import com.razdeep.konsignapi.service.KonsignUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class AuthenticationController {
     @Autowired
     private JwtUtilService jwtUtilService;
 
+    @Autowired
+    private AuthenticationService authenticationService;
+
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
@@ -42,5 +47,10 @@ public class AuthenticationController {
         final AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         authenticationResponse.setJwt(jwt);
         return ResponseEntity.ok(authenticationResponse);
+    }
+
+    @PostMapping(value = "/register")
+    public ResponseEntity<?> register(@RequestBody UserRegistration userRegistration) throws Exception {
+        return ResponseEntity.ok(authenticationService.register(userRegistration) ? "Successfully registered" : "Registration failed");
     }
 }
