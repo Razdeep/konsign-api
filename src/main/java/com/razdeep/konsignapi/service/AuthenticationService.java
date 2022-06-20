@@ -1,7 +1,7 @@
 package com.razdeep.konsignapi.service;
 
-import com.razdeep.konsignapi.config.SecurityConfig;
 import com.razdeep.konsignapi.entity.KonsignUser;
+import com.razdeep.konsignapi.exception.UsernameAlreadyExists;
 import com.razdeep.konsignapi.model.UserRegistration;
 import com.razdeep.konsignapi.repository.KonsignUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,10 @@ public class AuthenticationService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public boolean register(UserRegistration userRegistration) {
+    public boolean register(UserRegistration userRegistration) throws UsernameAlreadyExists {
+        if (konsignUserRepository.findKonsignUserByUsername(userRegistration.getUsername()).isPresent()) {
+            throw new UsernameAlreadyExists();
+        }
         KonsignUser konsignUser = new KonsignUser(userRegistration);
         konsignUser.setPassword(bCryptPasswordEncoder.encode(konsignUser.getPassword()));
         return konsignUserRepository.save(konsignUser) != null;

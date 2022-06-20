@@ -2,10 +2,6 @@ package com.razdeep.konsignapi.entity;
 
 import com.razdeep.konsignapi.model.UserRegistration;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-import org.springframework.context.annotation.Primary;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 
@@ -17,7 +13,7 @@ public class KonsignUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(unique = true)
+    @Column(name = "username", unique = true)
     private String username;
     private String password;
     private String emailAddress;

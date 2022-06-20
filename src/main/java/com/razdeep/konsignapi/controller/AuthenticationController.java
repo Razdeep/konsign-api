@@ -1,5 +1,6 @@
 package com.razdeep.konsignapi.controller;
 
+import com.razdeep.konsignapi.exception.UsernameAlreadyExists;
 import com.razdeep.konsignapi.model.AuthenticationRequest;
 import com.razdeep.konsignapi.model.AuthenticationResponse;
 import com.razdeep.konsignapi.model.UserRegistration;
@@ -39,7 +40,9 @@ public class AuthenticationController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                     authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            throw new Exception("User name or password not found");
+            return ResponseEntity.badRequest().body("Username or password mismatch");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         final UserDetails konsignUserDetails = konsignUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
@@ -51,6 +54,11 @@ public class AuthenticationController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<?> register(@RequestBody UserRegistration userRegistration) throws Exception {
-        return ResponseEntity.ok(authenticationService.register(userRegistration) ? "Successfully registered" : "Registration failed");
+        try {
+            authenticationService.register(userRegistration);
+        } catch (UsernameAlreadyExists e) {
+            return ResponseEntity.badRequest().body("User already exists");
+        }
+        return ResponseEntity.ok("Successfully registered");
     }
 }

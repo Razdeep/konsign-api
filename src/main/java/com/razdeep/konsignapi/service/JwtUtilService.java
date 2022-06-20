@@ -1,6 +1,5 @@
 package com.razdeep.konsignapi.service;
 
-import com.razdeep.konsignapi.model.KonsignUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
