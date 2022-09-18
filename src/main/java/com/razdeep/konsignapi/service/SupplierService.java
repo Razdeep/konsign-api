@@ -26,4 +26,10 @@ public class SupplierService {
     public void addSupplier(Supplier supplier) {
         supplierRepository.save(new SupplierEntity(supplier));
     }
+
+    public boolean deleteSupplier(String supplierId) {
+        boolean wasPresent = supplierRepository.findById(supplierId).isPresent();
+        supplierRepository.deleteById(supplierId);
+        return wasPresent;
+    }
 }
