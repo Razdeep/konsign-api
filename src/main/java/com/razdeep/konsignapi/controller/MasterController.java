@@ -31,10 +31,14 @@ public class MasterController {
 
     @PostMapping("/addSupplier")
     ResponseEntity<String> addSupplier(@RequestBody Supplier supplier) {
-        Map<String, Boolean> message = new HashMap<>();
-        supplierService.addSupplier(supplier);
-        message.put("success", true);
-        return new ResponseEntity<>(gson.toJson(message), HttpStatus.OK);
+        Map<String, String> messageMap = new HashMap<>();
+        if (supplierService.addSupplier(supplier)) {
+            messageMap.put("message", "Successfully added supplier");
+            return new ResponseEntity<>(gson.toJson(messageMap), HttpStatus.OK);
+        } else {
+            messageMap.put("message", "Failed to add supplier");
+            return new ResponseEntity<>(gson.toJson(messageMap), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/supplier/{supplierId}")

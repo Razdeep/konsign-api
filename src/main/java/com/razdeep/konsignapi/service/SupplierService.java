@@ -23,8 +23,12 @@ public class SupplierService {
         return result;
     }
 
-    public void addSupplier(Supplier supplier) {
+    public boolean addSupplier(Supplier supplier) {
+        if (supplier.getSupplierId().isEmpty()) {
+            return false;
+        }
         supplierRepository.save(new SupplierEntity(supplier));
+        return true;
     }
 
     public boolean deleteSupplier(String supplierId) {

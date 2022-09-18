@@ -6,8 +6,10 @@ import lombok.NonNull;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "supplier")
 @Data
 public class SupplierEntity {
     @Id
