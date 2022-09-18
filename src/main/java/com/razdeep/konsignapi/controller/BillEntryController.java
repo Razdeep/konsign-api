@@ -16,22 +16,28 @@ import java.util.Map;
 public class BillEntryController {
 
     @Autowired
+    private Gson gson;
+
+    @Autowired
     private BillEntryService billEntryService;
 
     @PostMapping(value = "/billentry")
     public ResponseEntity<String> billEntry(@RequestBody Bill bill) {
-        Gson gson = new Gson();
         Map<String, String> body = new HashMap<>();
-        body.put("message", "received");
-        ResponseEntity<String> res = new ResponseEntity<>(gson.toJson(body),
-                billEntryService.enterBill(bill) ? HttpStatus.OK : HttpStatus.NOT_ACCEPTABLE);
-        return res;
+        ResponseEntity<String> response;
+        if (billEntryService.enterBill(bill)) {
+            body.put("message", "Successfully saved bill");
+            response = new ResponseEntity<>(gson.toJson(body), HttpStatus.OK);
+        } else {
+            body.put("message", "Saving bill failed");
+            response = new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_ACCEPTABLE);
+        }
+        return response;
     }
 
     @GetMapping(value = "/")
     public ResponseEntity<String> welcome() {
-        ResponseEntity<String> res = new ResponseEntity<>("Welcome",
+        return new ResponseEntity<>("Welcome to konsign-api",
                 HttpStatus.OK);
-        return res;
     }
 }
