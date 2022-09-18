@@ -47,7 +47,7 @@ public class MasterController {
         }
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("message", message);
-        return new ResponseEntity<>(gson.toJson(message), HttpStatus.OK);
+        return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
     }
 
 }
