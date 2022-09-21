@@ -1,7 +1,9 @@
 package com.razdeep.konsignapi.controller;
 
 import com.google.gson.Gson;
+import com.razdeep.konsignapi.model.Buyer;
 import com.razdeep.konsignapi.model.Supplier;
+import com.razdeep.konsignapi.service.BuyerService;
 import com.razdeep.konsignapi.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,9 @@ public class MasterController {
 
     @Autowired
     private SupplierService supplierService;
+
+    @Autowired
+    private BuyerService buyerService;
 
     @GetMapping("/suppliers")
     ResponseEntity<String> getSuppliers() {
@@ -54,4 +59,35 @@ public class MasterController {
         return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
     }
 
+    @GetMapping("/buyers")
+    ResponseEntity<String> getBuyers() {
+        Map<String, List<Buyer>> message = new HashMap<>();
+        message.put("buyers", buyerService.getBuyers());
+        return new ResponseEntity<>(gson.toJson(message), HttpStatus.OK);
+    }
+
+    @PostMapping("/addBuyer")
+    ResponseEntity<String> addBuyer(@RequestBody Buyer buyer) {
+        Map<String, String> messageMap = new HashMap<>();
+        if (buyerService.addBuyer(buyer)) {
+            messageMap.put("message", "Successfully added buyer");
+            return new ResponseEntity<>(gson.toJson(messageMap), HttpStatus.OK);
+        } else {
+            messageMap.put("message", "Failed to add supplier");
+            return new ResponseEntity<>(gson.toJson(messageMap), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/buyer/{buyerId}")
+    ResponseEntity<String> deleteBuyer(@PathVariable String buyerId) {
+        String message;
+        if (buyerService.deleteBuyer(buyerId)) {
+            message = "Successfully deleted buyer Id: " + buyerId;
+        } else {
+            message = buyerId + " is already deleted";
+        }
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("message", message);
+        return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
+    }
 }
