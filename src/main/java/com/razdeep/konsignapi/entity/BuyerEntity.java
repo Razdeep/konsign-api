@@ -4,9 +4,8 @@ import com.razdeep.konsignapi.model.Buyer;
 import lombok.Data;
 import lombok.NonNull;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "buyer")
@@ -17,6 +16,9 @@ public class BuyerEntity {
 
     @NonNull
     private String buyerName;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyerEntity")
+    private List<BillEntity> billEntities;
 
     public BuyerEntity(Buyer buyer) {
         buyerId = buyer.getBuyerId();

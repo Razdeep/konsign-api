@@ -36,4 +36,8 @@ public class SupplierService {
         supplierRepository.deleteById(supplierId);
         return wasPresent;
     }
+
+    public SupplierEntity getSupplierBySupplierName(String supplierName) {
+        return supplierRepository.findSupplierBySupplierName(supplierName);
+    }
 }

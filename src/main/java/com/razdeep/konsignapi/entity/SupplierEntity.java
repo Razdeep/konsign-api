@@ -6,7 +6,9 @@ import lombok.NonNull;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "supplier")
@@ -17,6 +19,9 @@ public class SupplierEntity {
 
     @NonNull
     private String supplierName;
+
+    @OneToMany(mappedBy = "supplierEntity")
+    private List<BillEntity> billEntities;
 
     public SupplierEntity(Supplier supplier) {
         supplierId = supplier.getSupplierId();

@@ -36,4 +36,8 @@ public class BuyerService {
         buyerRepository.deleteById(buyerId);
         return wasPresent;
     }
+
+    public BuyerEntity getBuyerByBuyerName(String buyerName) {
+        return buyerRepository.findBuyerByBuyerName(buyerName);
+    }
 }

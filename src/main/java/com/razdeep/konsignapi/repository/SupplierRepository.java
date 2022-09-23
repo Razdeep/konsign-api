@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SupplierRepository extends JpaRepository<SupplierEntity, String> {
 
+    SupplierEntity findSupplierBySupplierName(String supplierName);
 }
