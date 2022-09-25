@@ -48,6 +48,17 @@ public class BillEntryController {
         return new ResponseEntity<>(gson.toJson(bill), HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/bill")
+    public ResponseEntity<String> deleteBill(@RequestParam(name = "billNo") String billNo) {
+        Map<String, String> body = new HashMap<>();
+        if (billEntryService.deleteBill(billNo)) {
+            body.put("message", "Successfully deleted bill " + billNo);
+        } else {
+            body.put("message", "Bill " + billNo + " is already deleted.");
+        }
+        return new ResponseEntity<>(gson.toJson(body), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/")
     public ResponseEntity<String> welcome() {
         return new ResponseEntity<>("Welcome to konsign-api",

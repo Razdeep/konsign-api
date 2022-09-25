@@ -82,4 +82,13 @@ public class BillEntryService {
                 .lrDate(billEntry.getLrDate())
                 .build();
     }
+
+    public boolean deleteBill(String billNo) {
+        boolean wasPresent = false;
+        if (billEntryRepository.findById(billNo).isPresent()) {
+            wasPresent = true;
+            billEntryRepository.deleteById(billNo);
+        }
+        return wasPresent;
+    }
 }
