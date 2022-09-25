@@ -38,8 +38,8 @@ public class BillEntryController {
     }
 
     @GetMapping(value = "/getBill")
-    public ResponseEntity<String> getBill(@RequestBody BillRequest billRequest) {
-        val bill = billEntryService.getBill(billRequest.getBillNo());
+    public ResponseEntity<String> getBill(@RequestParam(name = "billNo") String billNo) {
+        val bill = billEntryService.getBill(billNo);
         Map<String, String> body = new HashMap<>();
         if (bill == null) {
             body.put("message", "Bill not found");
