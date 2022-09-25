@@ -2,7 +2,9 @@ package com.razdeep.konsignapi.controller;
 
 import com.google.gson.Gson;
 import com.razdeep.konsignapi.model.Bill;
+import com.razdeep.konsignapi.model.BillRequest;
 import com.razdeep.konsignapi.service.BillEntryService;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,17 @@ public class BillEntryController {
             response = new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_ACCEPTABLE);
         }
         return response;
+    }
+
+    @GetMapping(value = "/getBill")
+    public ResponseEntity<String> getBill(@RequestBody BillRequest billRequest) {
+        val bill = billEntryService.getBill(billRequest.getBillNo());
+        Map<String, String> body = new HashMap<>();
+        if (bill == null) {
+            body.put("message", "Bill not found");
+            return new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(gson.toJson(bill), HttpStatus.OK);
     }
 
     @GetMapping(value = "/")

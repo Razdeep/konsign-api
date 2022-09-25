@@ -9,6 +9,7 @@ import com.razdeep.konsignapi.model.LrPm;
 import com.razdeep.konsignapi.repository.BillEntryRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -54,8 +55,31 @@ public class BillEntryService {
 
         billEntity.setLrPmEntityList(lrPmEntityList);
 
-
-
         return billEntryRepository.save(billEntity) != null;
+    }
+
+    public Bill getBill(String billNo) {
+        val billEntryOptional = billEntryRepository.findById(billNo);
+        if (billEntryOptional.isEmpty()) {
+            return null;
+        }
+        val billEntry = billEntryOptional.get();
+
+        List<LrPm> lrPmList = billEntry.getLrPmEntityList().stream()
+                .map((lrPmEntity -> {
+                    return new LrPm(lrPmEntity.getLr(), lrPmEntity.getPm());
+                }))
+                .collect(Collectors.toList());
+
+        return Bill.builder()
+                .billNo(billEntry.getBillNo())
+                .billAmount(billEntry.getBillAmount())
+                .billDate(billEntry.getBillDate())
+                .buyerName(billEntry.getBuyerEntity().getBuyerName())
+                .supplierName(billEntry.getSupplierEntity().getSupplierName())
+                .transport(billEntry.getTransport())
+                .lrPmList(lrPmList)
+                .lrDate(billEntry.getLrDate())
+                .build();
     }
 }
