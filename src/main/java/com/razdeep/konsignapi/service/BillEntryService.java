@@ -43,6 +43,7 @@ public class BillEntryService {
                 .billDate(bill.getBillDate())
                 .lrDate(bill.getLrDate())
                 .supplierEntity(supplierEntity)
+                .transport(bill.getTransport())
                 .build();
 
         List<LrPmEntity> lrPmEntityList = bill.getLrPmList().stream()
