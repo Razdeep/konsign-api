@@ -107,4 +107,11 @@ public class MasterController {
             return new ResponseEntity<>(gson.toJson(messageMap), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping("/transports")
+    ResponseEntity<String> getTransports() {
+        Map<String, List<Transport>> message = new HashMap<>();
+        message.put("transports", transportService.getTransports());
+        return new ResponseEntity<>(gson.toJson(message), HttpStatus.OK);
+    }
 }
