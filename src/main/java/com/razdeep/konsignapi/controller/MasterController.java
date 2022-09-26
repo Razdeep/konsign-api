@@ -3,8 +3,10 @@ package com.razdeep.konsignapi.controller;
 import com.google.gson.Gson;
 import com.razdeep.konsignapi.model.Buyer;
 import com.razdeep.konsignapi.model.Supplier;
+import com.razdeep.konsignapi.model.Transport;
 import com.razdeep.konsignapi.service.BuyerService;
 import com.razdeep.konsignapi.service.SupplierService;
+import com.razdeep.konsignapi.service.TransportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,9 @@ public class MasterController {
 
     @Autowired
     private BuyerService buyerService;
+
+    @Autowired
+    private TransportService transportService;
 
     @GetMapping("/suppliers")
     ResponseEntity<String> getSuppliers() {
@@ -89,5 +94,17 @@ public class MasterController {
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("message", message);
         return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
+    }
+
+    @PostMapping("/transport")
+    ResponseEntity<String> addTransport(@RequestBody Transport transport) {
+        Map<java.lang.String, java.lang.String> messageMap = new HashMap<>();
+        if (transportService.addTransport(transport)) {
+            messageMap.put("message", "Successfully added transport");
+            return new ResponseEntity<>(gson.toJson(messageMap), HttpStatus.OK);
+        } else {
+            messageMap.put("message", "Failed to add transport");
+            return new ResponseEntity<>(gson.toJson(messageMap), HttpStatus.BAD_REQUEST);
+        }
     }
 }

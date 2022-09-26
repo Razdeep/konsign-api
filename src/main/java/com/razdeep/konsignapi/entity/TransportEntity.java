@@ -1,0 +1,21 @@
+package com.razdeep.konsignapi.entity;
+
+import lombok.*;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "transport")
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class TransportEntity {
+    @Id
+    String transportId;
+
+    @NonNull
+    String transportName;
+}
