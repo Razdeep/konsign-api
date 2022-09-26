@@ -25,4 +25,8 @@ public class TransportService {
         transportRepository.save(transportEntity);
         return true;
     }
+
+    public TransportEntity getTransportByTransportName(String transportName) {
+        return transportRepository.findTransportByTransportName(transportName);
+    }
 }

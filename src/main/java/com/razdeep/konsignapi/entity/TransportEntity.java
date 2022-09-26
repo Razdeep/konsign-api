@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Table(name = "transport")
@@ -18,4 +20,7 @@ public class TransportEntity {
 
     @NonNull
     String transportName;
+
+    @OneToMany(mappedBy = "transportEntity")
+    List<BillEntity> billEntities;
 }

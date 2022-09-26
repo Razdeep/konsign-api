@@ -1,18 +1,13 @@
 package com.razdeep.konsignapi.service;
 
-import com.razdeep.konsignapi.entity.BillEntity;
-import com.razdeep.konsignapi.entity.BuyerEntity;
-import com.razdeep.konsignapi.entity.LrPmEntity;
-import com.razdeep.konsignapi.entity.SupplierEntity;
+import com.razdeep.konsignapi.entity.*;
 import com.razdeep.konsignapi.model.Bill;
 import com.razdeep.konsignapi.model.LrPm;
 import com.razdeep.konsignapi.repository.BillEntryRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,13 +21,17 @@ public class BillEntryService {
     private SupplierService supplierService;
 
     @Autowired
+    private TransportService transportService;
+
+    @Autowired
     private BillEntryRepository billEntryRepository;
     public boolean enterBill(Bill bill) {
 
         BuyerEntity buyerEntity = buyerService.getBuyerByBuyerName(bill.getBuyerName());
         SupplierEntity supplierEntity = supplierService.getSupplierBySupplierName(bill.getSupplierName());
+        TransportEntity transportEntity = transportService.getTransportByTransportName(bill.getTransport());
 
-        if (buyerEntity == null || supplierEntity == null || bill.getLrPmList() == null) {
+        if (buyerEntity == null || supplierEntity == null || transportEntity == null || bill.getLrPmList() == null) {
             return false;
         }
 
@@ -43,7 +42,7 @@ public class BillEntryService {
                 .billDate(bill.getBillDate())
                 .lrDate(bill.getLrDate())
                 .supplierEntity(supplierEntity)
-                .transport(bill.getTransport())
+                .transportEntity(transportEntity)
                 .build();
 
         List<LrPmEntity> lrPmEntityList = bill.getLrPmList().stream()
@@ -78,7 +77,7 @@ public class BillEntryService {
                 .billDate(billEntry.getBillDate())
                 .buyerName(billEntry.getBuyerEntity().getBuyerName())
                 .supplierName(billEntry.getSupplierEntity().getSupplierName())
-                .transport(billEntry.getTransport())
+                .transport(billEntry.getTransportEntity().getTransportName())
                 .lrPmList(lrPmList)
                 .lrDate(billEntry.getLrDate())
                 .build();

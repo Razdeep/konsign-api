@@ -2,6 +2,8 @@ package com.razdeep.konsignapi.entity;
 
 import com.razdeep.konsignapi.model.Bill;
 import com.razdeep.konsignapi.model.Supplier;
+import com.razdeep.konsignapi.model.Transport;
+import com.sun.jdi.connect.TransportTimeoutException;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,7 +29,11 @@ public class BillEntity {
     private BuyerEntity buyerEntity;
 
     private String billDate;
-    private String transport;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_transport_id", nullable = false)
+    private TransportEntity transportEntity;
+
     private String lrDate;
     private Float billAmount;
 
