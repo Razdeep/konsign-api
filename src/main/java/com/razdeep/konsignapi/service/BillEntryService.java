@@ -29,7 +29,7 @@ public class BillEntryService {
 
         BuyerEntity buyerEntity = buyerService.getBuyerByBuyerName(bill.getBuyerName());
         SupplierEntity supplierEntity = supplierService.getSupplierBySupplierName(bill.getSupplierName());
-        TransportEntity transportEntity = transportService.getTransportByTransportName(bill.getTransport());
+        TransportEntity transportEntity = transportService.getTransportByTransportName(bill.getTransportName());
 
         if (buyerEntity == null || supplierEntity == null || transportEntity == null || bill.getLrPmList() == null) {
             return false;
@@ -77,7 +77,7 @@ public class BillEntryService {
                 .billDate(billEntry.getBillDate())
                 .buyerName(billEntry.getBuyerEntity().getBuyerName())
                 .supplierName(billEntry.getSupplierEntity().getSupplierName())
-                .transport(billEntry.getTransportEntity().getTransportName())
+                .transportName(billEntry.getTransportEntity().getTransportName())
                 .lrPmList(lrPmList)
                 .lrDate(billEntry.getLrDate())
                 .build();

@@ -12,7 +12,7 @@ public class Bill {
     String buyerName;
     String billNo;
     String billDate;
-    String transport;
+    String transportName;
     String lrDate;
 
     List<LrPm> lrPmList;
@@ -20,7 +20,7 @@ public class Bill {
 
     public boolean anyFieldEmpty() {
         return supplierName == "" || buyerName == "" ||
-                billNo == "" || billDate == "" || transport == "" ||
+                billNo == "" || billDate == "" || transportName == "" ||
                 lrDate == "" || billAmount == 0.f;
     }
 }
