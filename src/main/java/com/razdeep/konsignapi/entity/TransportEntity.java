@@ -16,11 +16,11 @@ import java.util.List;
 @AllArgsConstructor
 public class TransportEntity {
     @Id
-    String transportId;
+    private String transportId;
 
     @NonNull
-    String transportName;
+    private String transportName;
 
     @OneToMany(mappedBy = "transportEntity")
-    List<BillEntity> billEntities;
+    private List<BillEntity> billEntities;
 }
