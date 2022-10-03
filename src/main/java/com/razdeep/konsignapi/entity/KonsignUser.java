@@ -1,13 +1,15 @@
 package com.razdeep.konsignapi.entity;
 
 import com.razdeep.konsignapi.model.UserRegistration;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "User")
-@Data
+@Getter
+@Setter
 public class KonsignUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -11,7 +11,8 @@ import java.util.List;
 @Entity
 @Table(name = "transport")
 @Builder
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransportEntity {

@@ -1,18 +1,14 @@
 package com.razdeep.konsignapi.entity;
 
-import com.razdeep.konsignapi.model.Bill;
-import com.razdeep.konsignapi.model.Supplier;
-import com.razdeep.konsignapi.model.Transport;
-import com.sun.jdi.connect.TransportTimeoutException;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "bill")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -1,15 +1,17 @@
 package com.razdeep.konsignapi.entity;
 
 import com.razdeep.konsignapi.model.Buyer;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "buyer")
-@Data
+@Getter
+@Setter
 public class BuyerEntity {
     @Id
     private String buyerId;
