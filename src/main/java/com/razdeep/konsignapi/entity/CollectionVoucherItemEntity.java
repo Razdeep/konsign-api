@@ -1,18 +1,24 @@
 package com.razdeep.konsignapi.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "collection_voucher_item")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CollectionVoucherItemEntity {
 
     @Id
     @GeneratedValue
     @Column(name = "collection_voucher_item_id")
-    private String collectionVoucherItemId;
+    private Integer collectionVoucherItemId;
 
     @ManyToOne
     @JoinColumn(name = "fk_collection_voucher_id")
