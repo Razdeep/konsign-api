@@ -16,11 +16,15 @@ import java.util.Map;
 @RestController
 public class CollectionVoucherController {
 
-    @Autowired
-    private Gson gson;
+    private final Gson gson;
+
+    private final CollectionVoucherService collectionVoucherService;
 
     @Autowired
-    private CollectionVoucherService collectionVoucherService;
+    public CollectionVoucherController(Gson gson, CollectionVoucherService collectionVoucherService) {
+        this.gson = gson;
+        this.collectionVoucherService = collectionVoucherService;
+    }
 
     @PostMapping("/collection-voucher")
     public ResponseEntity<String> addCollectionVoucher(@RequestBody CollectionVoucher collectionVoucher) {

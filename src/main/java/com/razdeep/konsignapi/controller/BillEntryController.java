@@ -17,11 +17,15 @@ import java.util.Map;
 @RestController
 public class BillEntryController {
 
-    @Autowired
-    private Gson gson;
+    private final Gson gson;
+
+    private final BillEntryService billEntryService;
 
     @Autowired
-    private BillEntryService billEntryService;
+    public BillEntryController(BillEntryService billEntryService, Gson gson) {
+        this.billEntryService = billEntryService;
+        this.gson = gson;
+    }
 
     @PostMapping(value = "/billentry")
     public ResponseEntity<String> billEntry(@RequestBody Bill bill) {

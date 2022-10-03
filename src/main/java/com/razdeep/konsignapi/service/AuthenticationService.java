@@ -11,11 +11,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
 
-    @Autowired
-    private KonsignUserRepository konsignUserRepository;
+    private final KonsignUserRepository konsignUserRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    public AuthenticationService(KonsignUserRepository konsignUserRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.konsignUserRepository = konsignUserRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     public boolean register(UserRegistration userRegistration) throws UsernameAlreadyExists {
         if (konsignUserRepository.findKonsignUserByUsername(userRegistration.getUsername()).isPresent()) {

@@ -10,27 +10,27 @@ import com.razdeep.konsignapi.service.TransportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Controller
+@RestController
 public class MasterController {
 
-    @Autowired
-    private Gson gson;
+    private final Gson gson;
+    private final SupplierService supplierService;
+    private final BuyerService buyerService;
+    private final TransportService transportService;
 
     @Autowired
-    private SupplierService supplierService;
-
-    @Autowired
-    private BuyerService buyerService;
-
-    @Autowired
-    private TransportService transportService;
+    public MasterController(Gson gson, SupplierService supplierService, BuyerService buyerService, TransportService transportService) {
+        this.gson = gson;
+        this.supplierService = supplierService;
+        this.buyerService = buyerService;
+        this.transportService = transportService;
+    }
 
     @GetMapping("/suppliers")
     ResponseEntity<String> getSuppliers() {

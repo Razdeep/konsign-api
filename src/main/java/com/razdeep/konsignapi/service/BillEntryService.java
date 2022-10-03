@@ -14,17 +14,20 @@ import java.util.stream.Collectors;
 @Service
 public class BillEntryService {
 
-    @Autowired
-    private BuyerService buyerService;
+
+    private final BuyerService buyerService;
+    private final SupplierService supplierService;
+    private final TransportService transportService;
+    private final BillEntryRepository billEntryRepository;
 
     @Autowired
-    private SupplierService supplierService;
+    public BillEntryService(BuyerService buyerService, SupplierService supplierService, TransportService transportService, BillEntryRepository billEntryRepository) {
+        this.buyerService = buyerService;
+        this.supplierService = supplierService;
+        this.transportService = transportService;
+        this.billEntryRepository = billEntryRepository;
+    }
 
-    @Autowired
-    private TransportService transportService;
-
-    @Autowired
-    private BillEntryRepository billEntryRepository;
     public boolean enterBill(Bill bill) {
 
         BuyerEntity buyerEntity = buyerService.getBuyerByBuyerName(bill.getBuyerName());

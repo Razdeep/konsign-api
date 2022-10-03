@@ -22,17 +22,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
+    private final AuthenticationManager authenticationManager;
+    private final KonsignUserDetailsService konsignUserDetailsService;
+    private final JwtUtilService jwtUtilService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    private KonsignUserDetailsService konsignUserDetailsService;
-
-    @Autowired
-    private JwtUtilService jwtUtilService;
-
-    @Autowired
-    private AuthenticationService authenticationService;
+    public AuthenticationController(AuthenticationManager authenticationManager, KonsignUserDetailsService konsignUserDetailsService, JwtUtilService jwtUtilService, AuthenticationService authenticationService) {
+        this.authenticationManager = authenticationManager;
+        this.konsignUserDetailsService = konsignUserDetailsService;
+        this.jwtUtilService = jwtUtilService;
+        this.authenticationService = authenticationService;
+    }
 
     @PostMapping(value = "/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {

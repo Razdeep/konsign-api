@@ -12,8 +12,12 @@ import java.util.List;
 @Service
 public class BuyerService {
 
+    private final BuyerRepository buyerRepository;
+
     @Autowired
-    private BuyerRepository buyerRepository;
+    public BuyerService(BuyerRepository buyerRepository) {
+        this.buyerRepository = buyerRepository;
+    }
 
     public List<Buyer> getBuyers() {
         List<Buyer> result = new ArrayList<>();

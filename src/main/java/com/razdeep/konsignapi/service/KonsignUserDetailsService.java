@@ -14,8 +14,12 @@ import java.util.Optional;
 @Service
 public class KonsignUserDetailsService implements UserDetailsService {
 
-    @Autowired
     private KonsignUserRepository konsignUserRepository;
+
+    @Autowired
+    public KonsignUserDetailsService(KonsignUserRepository konsignUserRepository) {
+        this.konsignUserRepository = konsignUserRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

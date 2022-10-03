@@ -21,11 +21,15 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private static final String BEARER_KEYWORD = "Bearer ";
 
-    @Autowired
-    private JwtUtilService jwtUtilService;
+
+    private final JwtUtilService jwtUtilService;
+    private final KonsignUserDetailsService konsignUserDetailsService;
 
     @Autowired
-    private KonsignUserDetailsService konsignUserDetailsService;
+    public JwtFilter(JwtUtilService jwtUtilService, KonsignUserDetailsService konsignUserDetailsService) {
+        this.jwtUtilService = jwtUtilService;
+        this.konsignUserDetailsService = konsignUserDetailsService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
