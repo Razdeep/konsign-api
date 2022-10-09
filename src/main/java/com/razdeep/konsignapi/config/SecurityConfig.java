@@ -1,7 +1,6 @@
 package com.razdeep.konsignapi.config;
 
 import com.razdeep.konsignapi.filter.JwtFilter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,11 +22,14 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtFilter jwtFilter;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final JwtFilter jwtFilter;
+    private final UserDetailsService userDetailsService;
+
+    public SecurityConfig(JwtFilter jwtFilter, UserDetailsService userDetailsService) {
+        this.jwtFilter = jwtFilter;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
