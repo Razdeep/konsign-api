@@ -45,4 +45,10 @@ public class CollectionVoucherService {
         collectionVoucherEntity.setCollectionVoucherItemEntityList(collectionVoucherItemEntityList);
         return collectionVoucherRepository.save(collectionVoucherEntity) != null;
     }
+
+    public boolean deleteVoucher(String voucherNo) {
+        boolean wasPresent = collectionVoucherRepository.findById(voucherNo).isPresent();
+        collectionVoucherRepository.deleteById(voucherNo);
+        return wasPresent;
+    }
 }
