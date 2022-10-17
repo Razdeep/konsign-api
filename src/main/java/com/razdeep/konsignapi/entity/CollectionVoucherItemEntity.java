@@ -26,7 +26,7 @@ public class CollectionVoucherItemEntity {
     @JoinColumn(name = "bill_bill_no")
     BillEntity bill;
 
-    Float amountCollected;
+    Double amountCollected;
 
     String bank;
 

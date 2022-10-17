@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CollectionVoucherItem {
 
-    Float amountCollected;
+    Double amountCollected;
 
     String bank;
 

@@ -94,4 +94,9 @@ public class BillEntryService {
         }
         return wasPresent;
     }
+
+    public List<Bill> getBillsByBuyerId(String buyerId) {
+        List<BillEntity> billEntityList = billEntryRepository.findAllBillsByBuyerId(buyerId);
+        return billEntityList.stream().map(Bill::new).collect(Collectors.toList());
+    }
 }
