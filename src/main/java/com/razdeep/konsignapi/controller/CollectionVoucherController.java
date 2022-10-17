@@ -86,7 +86,7 @@ public class CollectionVoucherController {
             return new ResponseEntity<>(responseMap, HttpStatus.BAD_REQUEST);
         }
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("pendingBillNumber", pendingBillNumbers);
+        responseMap.put("pendingBillNumbers", pendingBillNumbers);
         return new ResponseEntity<>(responseMap, HttpStatus.OK);
     }
 }
