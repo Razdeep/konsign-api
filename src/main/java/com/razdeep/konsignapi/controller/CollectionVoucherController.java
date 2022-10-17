@@ -1,7 +1,9 @@
 package com.razdeep.konsignapi.controller;
 
 import com.google.gson.Gson;
+import com.razdeep.konsignapi.entity.BuyerEntity;
 import com.razdeep.konsignapi.model.CollectionVoucher;
+import com.razdeep.konsignapi.service.BuyerService;
 import com.razdeep.konsignapi.service.CollectionVoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,11 +21,13 @@ public class CollectionVoucherController {
     private final Gson gson;
 
     private final CollectionVoucherService collectionVoucherService;
+    private final BuyerService buyerService;
 
     @Autowired
-    public CollectionVoucherController(Gson gson, CollectionVoucherService collectionVoucherService) {
+    public CollectionVoucherController(Gson gson, CollectionVoucherService collectionVoucherService, BuyerService buyerService) {
         this.gson = gson;
         this.collectionVoucherService = collectionVoucherService;
+        this.buyerService = buyerService;
     }
 
     @PostMapping("/collection-voucher")
@@ -60,7 +64,21 @@ public class CollectionVoucherController {
         if (buyerId != null && !buyerId.equals("")) {
             pendingBillNumbers = collectionVoucherService.getPendingBillNumbersToBeCollected(buyerId);
         } else if (buyerName != null && !buyerName.equals("")) {
-
+            BuyerEntity retrievedBuyerEntity = buyerService.getBuyerByBuyerName(buyerName);
+            if (retrievedBuyerEntity == null) {
+                String message = "Buyer name not found in database";
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("message", message);
+                return new ResponseEntity<>(responseMap, HttpStatus.BAD_REQUEST);
+            }
+            String retriedBuyerId = retrievedBuyerEntity.getBuyerId();
+            if (retriedBuyerId == null) {
+                String message = "Buyer name not found in database";
+                Map<String, Object> responseMap = new HashMap<>();
+                responseMap.put("message", message);
+                return new ResponseEntity<>(responseMap, HttpStatus.BAD_REQUEST);
+            }
+            pendingBillNumbers = collectionVoucherService.getPendingBillNumbersToBeCollected(retriedBuyerId);
         } else {
             String message = "Either buyerId or buyerName must be present the request param";
             Map<String, Object> responseMap = new HashMap<>();
