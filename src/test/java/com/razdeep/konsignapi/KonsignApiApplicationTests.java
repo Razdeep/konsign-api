@@ -14,6 +14,7 @@ import org.testcontainers.utility.DockerImageName;
 @ActiveProfiles("ci")
 class KonsignApiApplicationTests {
 
+    /*
     static MySQLContainer<?> mySQLContainer = new MySQLContainer<>(DockerImageName.parse("mysql:8.0.24"))
             .withUsername("root")
             .withPassword("")
@@ -37,5 +38,6 @@ class KonsignApiApplicationTests {
     static void afterAll() {
         mySQLContainer.stop();
     }
+    */
 
 }

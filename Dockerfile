@@ -1,5 +1,9 @@
 FROM eclipse-temurin:17-jdk-alpine as builder
 
+#RUN apk update && apk add --update docker openrc
+
+#RUN rc-update add docker boot
+
 RUN mkdir /src
 
 WORKDIR /src
