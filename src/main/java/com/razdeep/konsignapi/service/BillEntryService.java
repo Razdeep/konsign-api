@@ -8,6 +8,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,5 +99,26 @@ public class BillEntryService {
     public List<Bill> getBillsByBuyerId(String buyerId) {
         List<BillEntity> billEntityList = billEntryRepository.findAllBillsByBuyerId(buyerId);
         return billEntityList.stream().map(Bill::new).collect(Collectors.toList());
+    }
+
+    public BillEntity convertBillIntoBillEntity(Bill bill) {
+        val targetSupplierEntity = supplierService.getSupplierBySupplierName(bill.getSupplierName());
+        val targetBuyerEntity = buyerService.getBuyerByBuyerName(bill.getBuyerName());
+        val targetTransportEntity = transportService.getTransportByTransportName(bill.getTransportName());
+        List<LrPmEntity> targetLrPmEntityList = new ArrayList<>();
+        if (bill.getLrPmList() != null) {
+            targetLrPmEntityList = bill.getLrPmList().stream().map(LrPmEntity::new)
+                    .collect(Collectors.toList());
+        }
+        return BillEntity.builder()
+                .billNo(bill.getBillNo())
+                .supplierEntity(targetSupplierEntity)
+                .buyerEntity(targetBuyerEntity)
+                .billDate(bill.getBillDate())
+                .transportEntity(targetTransportEntity)
+                .lrDate(bill.getLrDate())
+                .billAmount(bill.getBillAmount())
+                .lrPmEntityList(targetLrPmEntityList)
+                .build();
     }
 }

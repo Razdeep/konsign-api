@@ -40,13 +40,18 @@ public class CollectionVoucherService {
         List<CollectionVoucherItemEntity> collectionVoucherItemEntityList = null;
         if (collectionVoucher.getCollectionVoucherItemList() != null) {
             collectionVoucherItemEntityList = collectionVoucher.getCollectionVoucherItemList().stream()
-                    .map(collectionVoucherItem ->
-                            CollectionVoucherItemEntity.builder()
-                                    .amountCollected(collectionVoucherItem.getAmountCollected())
+                    .map(collectionVoucherItem -> {
+                            val targetBill = billEntryService.getBill(collectionVoucherItem.getBillNo());
+                            val targetBilEntity = billEntryService.convertBillIntoBillEntity(targetBill);
+                            return CollectionVoucherItemEntity.builder()
                                     .collectionVoucher(collectionVoucherEntity)
+                                    .bill(targetBilEntity)
+                                    .amountCollected(collectionVoucherItem.getAmountCollected())
+                                    .bank(collectionVoucherItem.getBank())
                                     .ddNo(collectionVoucherItem.getDdNo())
                                     .ddDate(collectionVoucherItem.getDdDate())
-                                    .build())
+                                    .build();
+                    })
                     .collect(Collectors.toList());
         }
 

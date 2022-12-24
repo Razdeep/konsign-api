@@ -5,6 +5,8 @@ import lombok.Data;
 @Data
 public class CollectionVoucherItem {
 
+    String billNo;
+
     Double amountCollected;
 
     String bank;
