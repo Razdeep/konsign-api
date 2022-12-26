@@ -31,7 +31,7 @@ public class BillEntity {
     private TransportEntity transportEntity;
 
     private String lrDate;
-    private Float billAmount;
+    private Double billAmount;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "billEntry")
     private List<LrPmEntity> lrPmEntityList;

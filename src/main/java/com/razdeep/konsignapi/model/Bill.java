@@ -20,7 +20,7 @@ public class Bill {
     String lrDate;
 
     List<LrPm> lrPmList;
-    Float billAmount;
+    Double billAmount;
 
     public Bill(BillEntity other) {
         this.supplierName = other.getSupplierEntity().getSupplierName();

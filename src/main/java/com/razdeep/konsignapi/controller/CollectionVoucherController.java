@@ -3,6 +3,7 @@ package com.razdeep.konsignapi.controller;
 import com.google.gson.Gson;
 import com.razdeep.konsignapi.entity.BuyerEntity;
 import com.razdeep.konsignapi.model.CollectionVoucher;
+import com.razdeep.konsignapi.model.PendingBill;
 import com.razdeep.konsignapi.service.BuyerService;
 import com.razdeep.konsignapi.service.CollectionVoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +58,12 @@ public class CollectionVoucherController {
         return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/get-pending-bill-numbers-to-be-collected", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<Map<String, Object>> getPendingBillNumbersToBeCollected(@RequestParam(required = false) String buyerId,
+    @GetMapping(value = "/get-pending-bills-to-be-collected", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Map<String, Object>> getPendingBillsToBeCollected(@RequestParam(required = false) String buyerId,
                                                               @RequestParam(required = false) String buyerName) {
-        List<String> pendingBillNumbers = null;
+        List<PendingBill> pendingBillNumbers = null;
         if (buyerId != null && !buyerId.equals("")) {
-            pendingBillNumbers = collectionVoucherService.getPendingBillNumbersToBeCollected(buyerId);
+            pendingBillNumbers = collectionVoucherService.getPendingBillsToBeCollected(buyerId);
         } else if (buyerName != null && !buyerName.equals("")) {
             BuyerEntity retrievedBuyerEntity = buyerService.getBuyerByBuyerName(buyerName);
             if (retrievedBuyerEntity == null) {
@@ -78,7 +79,7 @@ public class CollectionVoucherController {
                 responseMap.put("message", message);
                 return new ResponseEntity<>(responseMap, HttpStatus.BAD_REQUEST);
             }
-            pendingBillNumbers = collectionVoucherService.getPendingBillNumbersToBeCollected(retriedBuyerId);
+            pendingBillNumbers = collectionVoucherService.getPendingBillsToBeCollected(retriedBuyerId);
         } else {
             String message = "Either buyerId or buyerName must be present the request param";
             Map<String, Object> responseMap = new HashMap<>();

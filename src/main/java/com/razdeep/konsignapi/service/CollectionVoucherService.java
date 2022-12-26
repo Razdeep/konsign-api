@@ -4,6 +4,7 @@ import com.razdeep.konsignapi.entity.CollectionVoucherEntity;
 import com.razdeep.konsignapi.entity.CollectionVoucherItemEntity;
 import com.razdeep.konsignapi.model.Bill;
 import com.razdeep.konsignapi.model.CollectionVoucher;
+import com.razdeep.konsignapi.model.PendingBill;
 import com.razdeep.konsignapi.repository.CollectionVoucherRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,17 +66,32 @@ public class CollectionVoucherService {
         return wasPresent;
     }
 
-    public List<String> getPendingBillNumbersToBeCollected(String buyerId) {
+    public List<PendingBill> getPendingBillsToBeCollected(String buyerId) {
         List<Bill> billsByBuyerId = billEntryService.getBillsByBuyerId(buyerId);
         val collectedAmountSoFar =  this.getCollectedAmountInfoForBuyerId(buyerId);
-        List<String> res = new ArrayList<>();
+        List<PendingBill> res = new ArrayList<>();
         for (val billByBuyerId: billsByBuyerId) {
             if (collectedAmountSoFar.containsKey(billByBuyerId.getBillNo())) {
                 if (billByBuyerId.getBillAmount() > collectedAmountSoFar.get(billByBuyerId.getBillNo())) {
-                    res.add(billByBuyerId.getBillNo());
+                    val pendingBillAmount = billByBuyerId.getBillAmount() - collectedAmountSoFar.get(billByBuyerId.getBillNo());
+                    val pendingBill = PendingBill.builder()
+                            .billNo(billByBuyerId.getBillNo())
+                            .billAmount(billByBuyerId.getBillAmount())
+                            .buyerName(billByBuyerId.getBuyerName())
+                            .supplierName(billByBuyerId.getSupplierName())
+                            .pendingAmount(pendingBillAmount)
+                            .build();
+                    res.add(pendingBill);
                 }
             } else {
-                res.add(billByBuyerId.getBillNo());
+                val pendingBill = PendingBill.builder()
+                        .billNo(billByBuyerId.getBillNo())
+                        .billAmount(billByBuyerId.getBillAmount())
+                        .buyerName(billByBuyerId.getBuyerName())
+                        .supplierName(billByBuyerId.getSupplierName())
+                        .pendingAmount(billByBuyerId.getBillAmount())
+                        .build();
+                res.add(pendingBill);
             }
         }
         return res;
