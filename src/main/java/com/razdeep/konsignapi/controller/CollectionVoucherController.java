@@ -61,9 +61,9 @@ public class CollectionVoucherController {
     @GetMapping(value = "/get-pending-bills-to-be-collected", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Map<String, Object>> getPendingBillsToBeCollected(@RequestParam(required = false) String buyerId,
                                                               @RequestParam(required = false) String buyerName) {
-        List<PendingBill> pendingBillNumbers = null;
+        List<PendingBill> pendingBills = null;
         if (buyerId != null && !buyerId.equals("")) {
-            pendingBillNumbers = collectionVoucherService.getPendingBillsToBeCollected(buyerId);
+            pendingBills = collectionVoucherService.getPendingBillsToBeCollected(buyerId);
         } else if (buyerName != null && !buyerName.equals("")) {
             BuyerEntity retrievedBuyerEntity = buyerService.getBuyerByBuyerName(buyerName);
             if (retrievedBuyerEntity == null) {
@@ -79,7 +79,7 @@ public class CollectionVoucherController {
                 responseMap.put("message", message);
                 return new ResponseEntity<>(responseMap, HttpStatus.BAD_REQUEST);
             }
-            pendingBillNumbers = collectionVoucherService.getPendingBillsToBeCollected(retriedBuyerId);
+            pendingBills = collectionVoucherService.getPendingBillsToBeCollected(retriedBuyerId);
         } else {
             String message = "Either buyerId or buyerName must be present the request param";
             Map<String, Object> responseMap = new HashMap<>();
@@ -87,7 +87,7 @@ public class CollectionVoucherController {
             return new ResponseEntity<>(responseMap, HttpStatus.BAD_REQUEST);
         }
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("pendingBillNumbers", pendingBillNumbers);
+        responseMap.put("pendingBills", pendingBills);
         return new ResponseEntity<>(responseMap, HttpStatus.OK);
     }
 }
