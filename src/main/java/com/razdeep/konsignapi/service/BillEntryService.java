@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,9 +50,12 @@ public class BillEntryService {
                 .transportEntity(transportEntity)
                 .build();
 
+        AtomicInteger lr_pm_index = new AtomicInteger();
+
         List<LrPmEntity> lrPmEntityList = bill.getLrPmList().stream()
                 .map(lrPm -> {
                     LrPmEntity lrPmEntity = new LrPmEntity(lrPm);
+                    lrPmEntity.setLrPmId(bill.getBillNo() + "_" + Integer.toString(lr_pm_index.getAndIncrement()));
                     lrPmEntity.setBillEntry(billEntity);
                     return lrPmEntity;
                 })

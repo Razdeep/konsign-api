@@ -12,8 +12,7 @@ import javax.persistence.*;
 @Setter
 public class LrPmEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int lrPmId;
+    private String lrPmId;
 
     @ManyToOne
     @JoinColumn(name="fk_bill_no", nullable = false)
