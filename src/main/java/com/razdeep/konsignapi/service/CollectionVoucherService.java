@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,19 +40,23 @@ public class CollectionVoucherService {
                 .build();
 
         List<CollectionVoucherItemEntity> collectionVoucherItemEntityList = null;
+        AtomicInteger collectionVoucherItemIndex = new AtomicInteger();
         if (collectionVoucher.getCollectionVoucherItemList() != null) {
             collectionVoucherItemEntityList = collectionVoucher.getCollectionVoucherItemList().stream()
                     .map(collectionVoucherItem -> {
-                            val targetBill = billEntryService.getBill(collectionVoucherItem.getBillNo());
-                            val targetBilEntity = billEntryService.convertBillIntoBillEntity(targetBill);
-                            return CollectionVoucherItemEntity.builder()
-                                    .collectionVoucher(collectionVoucherEntity)
-                                    .bill(targetBilEntity)
-                                    .amountCollected(collectionVoucherItem.getAmountCollected())
-                                    .bank(collectionVoucherItem.getBank())
-                                    .ddNo(collectionVoucherItem.getDdNo())
-                                    .ddDate(collectionVoucherItem.getDdDate())
-                                    .build();
+                        val targetBill = billEntryService.getBill(collectionVoucherItem.getBillNo());
+                        val targetBilEntity = billEntryService.convertBillIntoBillEntity(targetBill);
+                        val collectionVoucherItemId = collectionVoucher.getVoucherNo()
+                                + "_" + collectionVoucherItemIndex.getAndIncrement();
+                        return CollectionVoucherItemEntity.builder()
+                                .collectionVoucherItemId(collectionVoucherItemId)
+                                .collectionVoucher(collectionVoucherEntity)
+                                .bill(targetBilEntity)
+                                .amountCollected(collectionVoucherItem.getAmountCollected())
+                                .bank(collectionVoucherItem.getBank())
+                                .ddNo(collectionVoucherItem.getDdNo())
+                                .ddDate(collectionVoucherItem.getDdDate())
+                                .build();
                     })
                     .collect(Collectors.toList());
         }

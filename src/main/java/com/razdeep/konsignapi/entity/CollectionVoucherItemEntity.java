@@ -14,9 +14,8 @@ import javax.persistence.*;
 public class CollectionVoucherItemEntity {
 
     @Id
-    @GeneratedValue
     @Column(name = "collection_voucher_item_id")
-    private Integer collectionVoucherItemId;
+    private String collectionVoucherItemId;
 
     @ManyToOne
     @JoinColumn(name = "fk_collection_voucher_id")
