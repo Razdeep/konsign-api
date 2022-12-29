@@ -4,6 +4,7 @@ import com.razdeep.konsignapi.entity.CollectionVoucherEntity;
 import com.razdeep.konsignapi.entity.CollectionVoucherItemEntity;
 import com.razdeep.konsignapi.model.Bill;
 import com.razdeep.konsignapi.model.CollectionVoucher;
+import com.razdeep.konsignapi.model.CollectionVoucherItem;
 import com.razdeep.konsignapi.model.PendingBill;
 import com.razdeep.konsignapi.repository.CollectionVoucherRepository;
 import lombok.val;
@@ -118,5 +119,29 @@ public class CollectionVoucherService {
         }
 
         return res;
+    }
+
+    public CollectionVoucher getVoucherByVoucherNo(String voucherNo) {
+        CollectionVoucherEntity collectionVoucherEntity = collectionVoucherRepository
+                .getCollectionVoucherByVoucherNo(voucherNo);
+
+        val collectionVoucherItemList = collectionVoucherEntity.getCollectionVoucherItemEntityList().stream()
+                .map(collectionVoucherItemEntity -> {
+                    return CollectionVoucherItem.builder()
+                            .billNo(collectionVoucherItemEntity.getBill().getBillNo())
+                            .amountCollected(collectionVoucherItemEntity.getAmountCollected())
+                            .bank(collectionVoucherItemEntity.getBank())
+                            .ddNo(collectionVoucherItemEntity.getDdNo())
+                            .ddDate(collectionVoucherItemEntity.getDdDate())
+                            .build();
+                }).collect(Collectors.toList());
+
+
+        return CollectionVoucher.builder()
+                .voucherNo(collectionVoucherEntity.getVoucherNo())
+                .voucherDate(collectionVoucherEntity.getVoucherDate())
+                .buyerName(collectionVoucherEntity.getBuyer().getBuyerName())
+                .collectionVoucherItemList(collectionVoucherItemList)
+                .build();
     }
 }

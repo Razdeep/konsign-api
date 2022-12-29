@@ -31,6 +31,19 @@ public class CollectionVoucherController {
         this.buyerService = buyerService;
     }
 
+
+    @GetMapping("/collection-voucher")
+    public ResponseEntity<String> getCollectionVoucher(@RequestParam("voucherNo") String voucherNo) {
+        ResponseEntity<String> response;
+        CollectionVoucher collectionVoucher = collectionVoucherService.getVoucherByVoucherNo(voucherNo);
+        if (collectionVoucher == null) {
+            return new ResponseEntity<>("{}", HttpStatus.NOT_FOUND);
+        }
+
+        response = new ResponseEntity<>(gson.toJson(collectionVoucher), HttpStatus.OK);
+        return response;
+    }
+
     @PostMapping("/collection-voucher")
     public ResponseEntity<String> addCollectionVoucher(@RequestBody CollectionVoucher collectionVoucher) {
         Map<String, String> body = new HashMap<>();
