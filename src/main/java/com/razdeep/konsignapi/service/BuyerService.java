@@ -3,6 +3,7 @@ package com.razdeep.konsignapi.service;
 import com.razdeep.konsignapi.entity.BuyerEntity;
 import com.razdeep.konsignapi.model.Buyer;
 import com.razdeep.konsignapi.repository.BuyerRepository;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,12 @@ public class BuyerService {
 
     private final BuyerRepository buyerRepository;
 
+    private final CommonService commonService;
+
     @Autowired
-    public BuyerService(BuyerRepository buyerRepository) {
+    public BuyerService(BuyerRepository buyerRepository, CommonService commonService) {
         this.buyerRepository = buyerRepository;
+        this.commonService = commonService;
     }
 
     public List<Buyer> getBuyers() {
@@ -27,9 +31,23 @@ public class BuyerService {
         return result;
     }
 
+    private boolean isBuyerIdTaken(String buyerId) {
+        return buyerRepository.findById(buyerId).isPresent();
+    }
+
+
     public boolean addBuyer(Buyer buyer) {
         if (buyer.getBuyerId().isEmpty()) {
-            return false;
+            if (buyer.getBuyerName().isEmpty()) {
+                return false;
+            }
+            val baseCandidateBuyerId = commonService.generateInitials(buyer.getBuyerName());
+            String candidateBuyerId = baseCandidateBuyerId;
+            int attempt = 2;
+            while (isBuyerIdTaken(candidateBuyerId)) {
+                candidateBuyerId = baseCandidateBuyerId + Integer.toString(attempt++);
+            }
+            buyer.setBuyerId(candidateBuyerId);
         }
         buyerRepository.save(new BuyerEntity(buyer));
         return true;

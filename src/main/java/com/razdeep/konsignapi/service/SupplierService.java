@@ -37,6 +37,9 @@ public class SupplierService {
 
     public boolean addSupplier(Supplier supplier) {
         if (supplier.getSupplierId().isEmpty()) {
+            if (supplier.getSupplierName().isEmpty()) {
+                return false;
+            }
             val baseCandidateSupplierId = commonService.generateInitials(supplier.getSupplierName());
             String candidateSupplierId = baseCandidateSupplierId;
             int attempt = 2;
