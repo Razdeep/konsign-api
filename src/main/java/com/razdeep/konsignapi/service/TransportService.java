@@ -62,4 +62,12 @@ public class TransportService {
         });
         return result;
     }
+
+    public boolean deleteTransport(String transportId) {
+        boolean wasPresent = transportRepository.findById(transportId).isPresent();
+        if (wasPresent) {
+            transportRepository.deleteById(transportId);
+        }
+        return wasPresent;
+    }
 }

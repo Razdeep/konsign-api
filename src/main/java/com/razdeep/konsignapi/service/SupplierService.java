@@ -54,7 +54,9 @@ public class SupplierService {
 
     public boolean deleteSupplier(String supplierId) {
         boolean wasPresent = supplierRepository.findById(supplierId).isPresent();
-        supplierRepository.deleteById(supplierId);
+        if (wasPresent) {
+            supplierRepository.deleteById(supplierId);
+        }
         return wasPresent;
     }
 

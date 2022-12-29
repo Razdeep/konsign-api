@@ -55,7 +55,9 @@ public class BuyerService {
 
     public boolean deleteBuyer(String buyerId) {
         boolean wasPresent = buyerRepository.findById(buyerId).isPresent();
-        buyerRepository.deleteById(buyerId);
+        if (wasPresent) {
+            buyerRepository.deleteById(buyerId);
+        }
         return wasPresent;
     }
 

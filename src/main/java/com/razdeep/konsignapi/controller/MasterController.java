@@ -114,4 +114,17 @@ public class MasterController {
         message.put("transports", transportService.getTransports());
         return new ResponseEntity<>(gson.toJson(message), HttpStatus.OK);
     }
+
+    @DeleteMapping("/transport/{transportId}")
+    ResponseEntity<String> deleteTransport(@PathVariable String transportId) {
+        String message;
+        if (transportService.deleteTransport(transportId)) {
+            message = "Successfully deleted transport Id: " + transportId;
+        } else {
+            message = transportId + " is already deleted";
+        }
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put("message", message);
+        return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
+    }
 }
