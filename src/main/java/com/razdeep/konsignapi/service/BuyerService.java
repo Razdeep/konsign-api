@@ -62,6 +62,6 @@ public class BuyerService {
     }
 
     public BuyerEntity getBuyerByBuyerName(String buyerName) {
-        return buyerRepository.findBuyerByBuyerName(buyerName);
+        return buyerRepository.findAllBuyerByBuyerName(buyerName).get(0);
     }
 }

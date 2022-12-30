@@ -52,7 +52,7 @@ public class TransportService {
     }
 
     public TransportEntity getTransportByTransportName(String transportName) {
-        return transportRepository.findTransportByTransportName(transportName);
+        return transportRepository.findAllTransportByTransportName(transportName).get(0);
     }
 
     public List<Transport> getTransports() {

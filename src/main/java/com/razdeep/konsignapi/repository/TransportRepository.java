@@ -4,9 +4,11 @@ import com.razdeep.konsignapi.entity.TransportEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TransportRepository extends JpaRepository<TransportEntity, String> {
 
-    TransportEntity findTransportByTransportName(String transportName);
+    List<TransportEntity> findAllTransportByTransportName(String transportName);
 
 }

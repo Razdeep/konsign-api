@@ -61,6 +61,6 @@ public class SupplierService {
     }
 
     public SupplierEntity getSupplierBySupplierName(String supplierName) {
-        return supplierRepository.findSupplierBySupplierName(supplierName);
+        return supplierRepository.findAllSupplierBySupplierName(supplierName).get(0);
     }
 }
