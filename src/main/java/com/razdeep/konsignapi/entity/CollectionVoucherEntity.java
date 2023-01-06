@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CollectionVoucherEntity {
+public class CollectionVoucherEntity extends BaseTimestamp {
 
     @Id
     private String voucherNo;

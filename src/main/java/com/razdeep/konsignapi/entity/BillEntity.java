@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BillEntity {
+public class BillEntity extends BaseTimestamp {
     @Id
     private String billNo;
 

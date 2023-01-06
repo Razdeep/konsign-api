@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TransportEntity {
+public class TransportEntity extends BaseTimestamp {
     @Id
     private String transportId;
 

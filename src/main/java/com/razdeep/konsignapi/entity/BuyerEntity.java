@@ -12,7 +12,7 @@ import java.util.List;
 @Table(name = "buyer")
 @Getter
 @Setter
-public class BuyerEntity {
+public class BuyerEntity extends BaseTimestamp {
     @Id
     private String buyerId;
 

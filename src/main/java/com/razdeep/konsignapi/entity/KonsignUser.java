@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "User")
 @Getter
 @Setter
-public class KonsignUser {
+public class KonsignUser extends BaseTimestamp {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

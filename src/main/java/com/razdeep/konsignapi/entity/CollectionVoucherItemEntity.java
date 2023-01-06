@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CollectionVoucherItemEntity {
+public class CollectionVoucherItemEntity extends BaseTimestamp {
 
     @Id
     @Column(name = "collection_voucher_item_id")

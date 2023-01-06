@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "lrpm")
 @Getter
 @Setter
-public class LrPmEntity {
+public class LrPmEntity extends BaseTimestamp {
     @Id
     private String lrPmId;
 
