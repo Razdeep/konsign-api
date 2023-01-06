@@ -61,6 +61,7 @@ public class SupplierService {
     }
 
     public SupplierEntity getSupplierBySupplierName(String supplierName) {
-        return supplierRepository.findAllSupplierBySupplierName(supplierName).get(0);
+        val resultList = supplierRepository.findAllSupplierBySupplierName(supplierName);
+        return resultList == null || resultList.isEmpty() ? null : resultList.get(0);
     }
 }

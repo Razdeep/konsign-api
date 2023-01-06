@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 public class KonsignUserDetailsService implements UserDetailsService {
 
-    private KonsignUserRepository konsignUserRepository;
+    private final KonsignUserRepository konsignUserRepository;
 
     @Autowired
     public KonsignUserDetailsService(KonsignUserRepository konsignUserRepository) {
@@ -24,7 +24,7 @@ public class KonsignUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<KonsignUser> konsignUser = konsignUserRepository.findKonsignUserByUsername(username);
-        if (!konsignUser.isPresent()) {
+        if (konsignUser.isEmpty()) {
             throw new UsernameNotFoundException("user name not found");
         }
         return new KonsignUserDetails(konsignUser.get());

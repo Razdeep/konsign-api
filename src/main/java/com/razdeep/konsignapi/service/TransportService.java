@@ -52,7 +52,8 @@ public class TransportService {
     }
 
     public TransportEntity getTransportByTransportName(String transportName) {
-        return transportRepository.findAllTransportByTransportName(transportName).get(0);
+        val resultList = transportRepository.findAllTransportByTransportName(transportName);
+        return resultList == null || resultList.isEmpty() ? null : resultList.get(0);
     }
 
     public List<Transport> getTransports() {

@@ -62,6 +62,7 @@ public class BuyerService {
     }
 
     public BuyerEntity getBuyerByBuyerName(String buyerName) {
-        return buyerRepository.findAllBuyerByBuyerName(buyerName).get(0);
+        val resultList = buyerRepository.findAllBuyerByBuyerName(buyerName);
+        return resultList == null || resultList.isEmpty() ? null : resultList.get(0);
     }
 }
