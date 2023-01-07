@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Data
@@ -35,8 +36,9 @@ public class Bill {
     }
 
     public boolean anyFieldEmpty() {
-        return supplierName == "" || buyerName == "" ||
-                billNo == "" || billDate == "" || transportName == "" ||
-                lrDate == "" || billAmount == 0.f;
+        return Objects.equals(supplierName, "") || Objects.equals(buyerName, "") ||
+                Objects.equals(billNo, "") || Objects.equals(billDate, "") ||
+                Objects.equals(transportName, "") || Objects.equals(lrDate, "") ||
+                billAmount == 0.f;
     }
 }

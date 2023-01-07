@@ -20,12 +20,12 @@ public class AuthenticationService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public boolean register(UserRegistration userRegistration) throws UsernameAlreadyExists {
+    public void register(UserRegistration userRegistration) throws UsernameAlreadyExists {
         if (konsignUserRepository.findKonsignUserByUsername(userRegistration.getUsername()).isPresent()) {
             throw new UsernameAlreadyExists();
         }
         KonsignUser konsignUser = new KonsignUser(userRegistration);
         konsignUser.setPassword(bCryptPasswordEncoder.encode(konsignUser.getPassword()));
-        return konsignUserRepository.save(konsignUser) != null;
+        konsignUserRepository.save(konsignUser);
     }
 }

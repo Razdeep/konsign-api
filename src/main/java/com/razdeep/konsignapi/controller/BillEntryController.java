@@ -2,7 +2,6 @@ package com.razdeep.konsignapi.controller;
 
 import com.google.gson.Gson;
 import com.razdeep.konsignapi.model.Bill;
-import com.razdeep.konsignapi.model.BillRequest;
 import com.razdeep.konsignapi.service.BillEntryService;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,10 @@ public class BillEntryController {
     public ResponseEntity<String> billEntry(@RequestBody Bill bill) {
         Map<String, String> body = new HashMap<>();
         ResponseEntity<String> response;
-        if (billEntryService.enterBill(bill)) {
+        if (bill.anyFieldEmpty()) {
+            body.put("message", "Saving bill failed because all fields are not properly filled");
+            response = new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_ACCEPTABLE);
+        } else if (billEntryService.enterBill(bill)) {
             body.put("message", "Successfully saved bill");
             response = new ResponseEntity<>(gson.toJson(body), HttpStatus.OK);
         } else {

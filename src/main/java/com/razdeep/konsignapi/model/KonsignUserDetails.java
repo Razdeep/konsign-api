@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class KonsignUserDetails implements UserDetails {
-    private String username;
-    private String password;
-    private boolean enabled;
-    private List<GrantedAuthority> authorities;
+    private final String username;
+    private final String password;
+    private final boolean enabled;
+    private final List<GrantedAuthority> authorities;
 
     public KonsignUserDetails(KonsignUser konsignUser) {
         username = konsignUser.getUsername();
