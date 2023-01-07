@@ -7,6 +7,7 @@ import com.razdeep.konsignapi.model.Transport;
 import com.razdeep.konsignapi.service.BuyerService;
 import com.razdeep.konsignapi.service.SupplierService;
 import com.razdeep.konsignapi.service.TransportService;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +33,7 @@ public class MasterController {
         this.transportService = transportService;
     }
 
+    @Timed
     @GetMapping("/suppliers")
     ResponseEntity<String> getSuppliers() {
         Map<String, List<Supplier>> message = new HashMap<>();
@@ -39,6 +41,7 @@ public class MasterController {
         return new ResponseEntity<>(gson.toJson(message), HttpStatus.OK);
     }
 
+    @Timed
     @PostMapping("/addSupplier")
     ResponseEntity<String> addSupplier(@RequestBody Supplier supplier) {
         Map<String, String> messageMap = new HashMap<>();
@@ -51,6 +54,7 @@ public class MasterController {
         }
     }
 
+    @Timed
     @DeleteMapping("/supplier/{supplierId}")
     ResponseEntity<String> deleteSupplier(@PathVariable String supplierId) {
         String message;
@@ -64,6 +68,7 @@ public class MasterController {
         return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
     }
 
+    @Timed
     @GetMapping("/buyers")
     ResponseEntity<String> getBuyers() {
         Map<String, List<Buyer>> message = new HashMap<>();
@@ -71,6 +76,7 @@ public class MasterController {
         return new ResponseEntity<>(gson.toJson(message), HttpStatus.OK);
     }
 
+    @Timed
     @PostMapping("/addBuyer")
     ResponseEntity<String> addBuyer(@RequestBody Buyer buyer) {
         Map<String, String> messageMap = new HashMap<>();
@@ -83,6 +89,7 @@ public class MasterController {
         }
     }
 
+    @Timed
     @DeleteMapping("/buyer/{buyerId}")
     ResponseEntity<String> deleteBuyer(@PathVariable String buyerId) {
         String message;
@@ -96,6 +103,7 @@ public class MasterController {
         return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
     }
 
+    @Timed
     @PostMapping("/transport")
     ResponseEntity<String> addTransport(@RequestBody Transport transport) {
         Map<java.lang.String, java.lang.String> messageMap = new HashMap<>();
@@ -108,6 +116,7 @@ public class MasterController {
         }
     }
 
+    @Timed
     @GetMapping("/transports")
     ResponseEntity<String> getTransports() {
         Map<String, List<Transport>> message = new HashMap<>();
@@ -115,6 +124,7 @@ public class MasterController {
         return new ResponseEntity<>(gson.toJson(message), HttpStatus.OK);
     }
 
+    @Timed
     @DeleteMapping("/transport/{transportId}")
     ResponseEntity<String> deleteTransport(@PathVariable String transportId) {
         String message;

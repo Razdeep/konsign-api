@@ -3,6 +3,7 @@ package com.razdeep.konsignapi.controller;
 import com.google.gson.Gson;
 import com.razdeep.konsignapi.model.Bill;
 import com.razdeep.konsignapi.service.BillEntryService;
+import io.micrometer.core.annotation.Timed;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class BillEntryController {
         this.gson = gson;
     }
 
+    @Timed
     @PostMapping(value = "/billentry")
     public ResponseEntity<String> billEntry(@RequestBody Bill bill) {
         Map<String, String> body = new HashMap<>();
@@ -43,6 +45,7 @@ public class BillEntryController {
         return response;
     }
 
+    @Timed
     @GetMapping(value = "/getBill")
     public ResponseEntity<String> getBill(@RequestParam(name = "billNo") String billNo) {
         val bill = billEntryService.getBill(billNo);
@@ -54,6 +57,7 @@ public class BillEntryController {
         return new ResponseEntity<>(gson.toJson(bill), HttpStatus.OK);
     }
 
+    @Timed
     @DeleteMapping(value = "/bill")
     public ResponseEntity<String> deleteBill(@RequestParam(name = "billNo") String billNo) {
         Map<String, String> body = new HashMap<>();

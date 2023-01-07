@@ -6,6 +6,7 @@ import com.razdeep.konsignapi.model.CollectionVoucher;
 import com.razdeep.konsignapi.model.PendingBill;
 import com.razdeep.konsignapi.service.BuyerService;
 import com.razdeep.konsignapi.service.CollectionVoucherService;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +33,7 @@ public class CollectionVoucherController {
     }
 
 
+    @Timed
     @GetMapping("/collection-voucher")
     public ResponseEntity<String> getCollectionVoucher(@RequestParam("voucherNo") String voucherNo) {
         ResponseEntity<String> response;
@@ -44,6 +46,7 @@ public class CollectionVoucherController {
         return response;
     }
 
+    @Timed
     @PostMapping("/collection-voucher")
     public ResponseEntity<String> addCollectionVoucher(@RequestBody CollectionVoucher collectionVoucher) {
         Map<String, String> body = new HashMap<>();
@@ -58,6 +61,7 @@ public class CollectionVoucherController {
         return response;
     }
 
+    @Timed
     @DeleteMapping("/collection-voucher/{voucherNo}")
     ResponseEntity<String> deleteBuyer(@PathVariable String voucherNo) {
         String message;
@@ -71,6 +75,7 @@ public class CollectionVoucherController {
         return new ResponseEntity<>(gson.toJson(responseMap), HttpStatus.OK);
     }
 
+    @Timed
     @GetMapping(value = "/get-pending-bills-to-be-collected", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Map<String, Object>> getPendingBillsToBeCollected(@RequestParam(required = false) String buyerId,
                                                               @RequestParam(required = false) String buyerName) {
