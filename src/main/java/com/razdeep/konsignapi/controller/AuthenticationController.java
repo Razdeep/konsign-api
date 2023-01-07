@@ -55,7 +55,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<?> register(@RequestBody UserRegistration userRegistration) throws Exception {
+    public ResponseEntity<?> register(@RequestBody UserRegistration userRegistration) {
         try {
             authenticationService.register(userRegistration);
         } catch (UsernameAlreadyExists e) {

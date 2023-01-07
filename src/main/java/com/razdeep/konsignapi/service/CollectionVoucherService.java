@@ -34,36 +34,40 @@ public class CollectionVoucherService {
     }
 
     public boolean addCollectionVoucher(CollectionVoucher collectionVoucher) {
+        if (collectionVoucher.getCollectionVoucherItemList() == null) {
+            return false;
+        }
+
         CollectionVoucherEntity collectionVoucherEntity = CollectionVoucherEntity.builder()
                 .voucherNo(collectionVoucher.getVoucherNo())
                 .voucherDate(collectionVoucher.getVoucherDate())
                 .buyer(buyerService.getBuyerByBuyerName(collectionVoucher.getBuyerName()))
                 .build();
 
-        List<CollectionVoucherItemEntity> collectionVoucherItemEntityList = null;
+        List<CollectionVoucherItemEntity> collectionVoucherItemEntityList;
         AtomicInteger collectionVoucherItemIndex = new AtomicInteger();
-        if (collectionVoucher.getCollectionVoucherItemList() != null) {
-            collectionVoucherItemEntityList = collectionVoucher.getCollectionVoucherItemList().stream()
-                    .map(collectionVoucherItem -> {
-                        val targetBill = billEntryService.getBill(collectionVoucherItem.getBillNo());
-                        val targetBilEntity = billEntryService.convertBillIntoBillEntity(targetBill);
-                        val collectionVoucherItemId = collectionVoucher.getVoucherNo()
-                                + "_" + collectionVoucherItemIndex.getAndIncrement();
-                        return CollectionVoucherItemEntity.builder()
-                                .collectionVoucherItemId(collectionVoucherItemId)
-                                .collectionVoucher(collectionVoucherEntity)
-                                .bill(targetBilEntity)
-                                .amountCollected(collectionVoucherItem.getAmountCollected())
-                                .bank(collectionVoucherItem.getBank())
-                                .ddNo(collectionVoucherItem.getDdNo())
-                                .ddDate(collectionVoucherItem.getDdDate())
-                                .build();
-                    })
-                    .collect(Collectors.toList());
-        }
+
+        collectionVoucherItemEntityList = collectionVoucher.getCollectionVoucherItemList().stream()
+                .map(collectionVoucherItem -> {
+                    val targetBill = billEntryService.getBill(collectionVoucherItem.getBillNo());
+                    val targetBilEntity = billEntryService.convertBillIntoBillEntity(targetBill);
+                    val collectionVoucherItemId = collectionVoucher.getVoucherNo()
+                            + "_" + collectionVoucherItemIndex.getAndIncrement();
+                    return CollectionVoucherItemEntity.builder()
+                            .collectionVoucherItemId(collectionVoucherItemId)
+                            .collectionVoucher(collectionVoucherEntity)
+                            .bill(targetBilEntity)
+                            .amountCollected(collectionVoucherItem.getAmountCollected())
+                            .bank(collectionVoucherItem.getBank())
+                            .ddNo(collectionVoucherItem.getDdNo())
+                            .ddDate(collectionVoucherItem.getDdDate())
+                            .build();
+                })
+                .collect(Collectors.toList());
 
         collectionVoucherEntity.setCollectionVoucherItemEntityList(collectionVoucherItemEntityList);
-        return collectionVoucherRepository.save(collectionVoucherEntity) != null;
+        collectionVoucherRepository.save(collectionVoucherEntity);
+        return true;
     }
 
     public boolean deleteVoucher(String voucherNo) {
@@ -126,15 +130,13 @@ public class CollectionVoucherService {
                 .getCollectionVoucherByVoucherNo(voucherNo);
 
         val collectionVoucherItemList = collectionVoucherEntity.getCollectionVoucherItemEntityList().stream()
-                .map(collectionVoucherItemEntity -> {
-                    return CollectionVoucherItem.builder()
-                            .billNo(collectionVoucherItemEntity.getBill().getBillNo())
-                            .amountCollected(collectionVoucherItemEntity.getAmountCollected())
-                            .bank(collectionVoucherItemEntity.getBank())
-                            .ddNo(collectionVoucherItemEntity.getDdNo())
-                            .ddDate(collectionVoucherItemEntity.getDdDate())
-                            .build();
-                }).collect(Collectors.toList());
+                .map(collectionVoucherItemEntity -> CollectionVoucherItem.builder()
+                        .billNo(collectionVoucherItemEntity.getBill().getBillNo())
+                        .amountCollected(collectionVoucherItemEntity.getAmountCollected())
+                        .bank(collectionVoucherItemEntity.getBank())
+                        .ddNo(collectionVoucherItemEntity.getDdNo())
+                        .ddDate(collectionVoucherItemEntity.getDdDate())
+                        .build()).collect(Collectors.toList());
 
 
         return CollectionVoucher.builder()

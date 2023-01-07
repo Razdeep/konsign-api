@@ -55,7 +55,7 @@ public class BillEntryService {
         List<LrPmEntity> lrPmEntityList = bill.getLrPmList().stream()
                 .map(lrPm -> {
                     LrPmEntity lrPmEntity = new LrPmEntity(lrPm);
-                    lrPmEntity.setLrPmId(bill.getBillNo() + "_" + Integer.toString(lr_pm_index.getAndIncrement()));
+                    lrPmEntity.setLrPmId(bill.getBillNo() + "_" + lr_pm_index.getAndIncrement());
                     lrPmEntity.setBillEntry(billEntity);
                     return lrPmEntity;
                 })
@@ -63,7 +63,8 @@ public class BillEntryService {
 
         billEntity.setLrPmEntityList(lrPmEntityList);
 
-        return billEntryRepository.save(billEntity) != null;
+        billEntryRepository.save(billEntity);
+        return true;
     }
 
     public Bill getBill(String billNo) {
@@ -74,9 +75,7 @@ public class BillEntryService {
         val billEntry = billEntryOptional.get();
 
         List<LrPm> lrPmList = billEntry.getLrPmEntityList().stream()
-                .map((lrPmEntity -> {
-                    return new LrPm(lrPmEntity.getLr(), lrPmEntity.getPm());
-                }))
+                .map((lrPmEntity -> new LrPm(lrPmEntity.getLr(), lrPmEntity.getPm())))
                 .collect(Collectors.toList());
 
         return Bill.builder()

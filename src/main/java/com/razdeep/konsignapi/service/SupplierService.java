@@ -29,9 +29,7 @@ public class SupplierService {
 
     public List<Supplier> getSuppliers() {
         List<Supplier> result = new ArrayList<>();
-        supplierRepository.findAll().forEach((supplierEntity) -> {
-            result.add(new Supplier(supplierEntity));
-        });
+        supplierRepository.findAll().forEach((supplierEntity) -> result.add(new Supplier(supplierEntity)));
         return result;
     }
 
@@ -44,7 +42,7 @@ public class SupplierService {
             String candidateSupplierId = baseCandidateSupplierId;
             int attempt = 2;
             while (isSupplierIdTaken(candidateSupplierId)) {
-                candidateSupplierId = baseCandidateSupplierId + Integer.toString(attempt++);
+                candidateSupplierId = baseCandidateSupplierId + attempt++;
             }
             supplier.setSupplierId(candidateSupplierId);
         }

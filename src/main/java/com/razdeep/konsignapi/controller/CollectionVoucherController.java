@@ -74,7 +74,7 @@ public class CollectionVoucherController {
     @GetMapping(value = "/get-pending-bills-to-be-collected", produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<Map<String, Object>> getPendingBillsToBeCollected(@RequestParam(required = false) String buyerId,
                                                               @RequestParam(required = false) String buyerName) {
-        List<PendingBill> pendingBills = null;
+        List<PendingBill> pendingBills;
         if (buyerId != null && !buyerId.equals("")) {
             pendingBills = collectionVoucherService.getPendingBillsToBeCollected(buyerId);
         } else if (buyerName != null && !buyerName.equals("")) {

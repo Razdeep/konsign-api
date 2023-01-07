@@ -25,9 +25,7 @@ public class BuyerService {
 
     public List<Buyer> getBuyers() {
         List<Buyer> result = new ArrayList<>();
-        buyerRepository.findAll().forEach((buyerEntity) -> {
-            result.add(new Buyer(buyerEntity));
-        });
+        buyerRepository.findAll().forEach((buyerEntity) -> result.add(new Buyer(buyerEntity)));
         return result;
     }
 
@@ -45,7 +43,7 @@ public class BuyerService {
             String candidateBuyerId = baseCandidateBuyerId;
             int attempt = 2;
             while (isBuyerIdTaken(candidateBuyerId)) {
-                candidateBuyerId = baseCandidateBuyerId + Integer.toString(attempt++);
+                candidateBuyerId = baseCandidateBuyerId + attempt++;
             }
             buyer.setBuyerId(candidateBuyerId);
         }

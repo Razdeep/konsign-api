@@ -37,7 +37,7 @@ public class TransportService {
             String candidateTransportId = baseCandidateTransportId;
             int attempt = 2;
             while (isTransportIdTaken(candidateTransportId)) {
-                candidateTransportId = baseCandidateTransportId + Integer.toString(attempt++);
+                candidateTransportId = baseCandidateTransportId + attempt++;
             }
             transport.setTransportId(candidateTransportId);
         }
@@ -58,9 +58,7 @@ public class TransportService {
 
     public List<Transport> getTransports() {
         List<Transport> result = new ArrayList<>();
-        transportRepository.findAll().forEach((transportEntity) -> {
-            result.add(new Transport(transportEntity.getTransportId(), transportEntity.getTransportName()));
-        });
+        transportRepository.findAll().forEach((transportEntity) -> result.add(new Transport(transportEntity.getTransportId(), transportEntity.getTransportName())));
         return result;
     }
 
