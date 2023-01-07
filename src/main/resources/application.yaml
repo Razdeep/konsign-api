@@ -10,6 +10,12 @@ spring:
         format_sql: true
     show-sql: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
