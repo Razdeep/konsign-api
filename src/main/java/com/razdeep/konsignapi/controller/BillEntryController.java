@@ -58,6 +58,18 @@ public class BillEntryController {
     }
 
     @Timed
+    @GetMapping(value = "/getAllBills/{offset}/{pageSize}")
+    public ResponseEntity<String> getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
+        val bills = billEntryService.getAllBills(offset, pageSize);
+        if (bills == null) {
+            Map<String, String> body = new HashMap<>();
+            body.put("message", "Bill not found");
+            return new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(gson.toJson(bills), HttpStatus.OK);
+    }
+
+    @Timed
     @DeleteMapping(value = "/bill")
     public ResponseEntity<String> deleteBill(@RequestParam(name = "billNo") String billNo) {
         Map<String, String> body = new HashMap<>();

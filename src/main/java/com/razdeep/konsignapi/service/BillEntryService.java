@@ -6,8 +6,15 @@ import com.razdeep.konsignapi.model.LrPm;
 import com.razdeep.konsignapi.repository.BillEntryRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
+import java.awt.print.PageFormat;
+import java.awt.print.Pageable;
+import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -123,5 +130,15 @@ public class BillEntryService {
                 .billAmount(bill.getBillAmount())
                 .lrPmEntityList(targetLrPmEntityList)
                 .build();
+    }
+
+    public Page<Bill> getAllBills(int offset, int size) {
+        val billEntityPages = billEntryRepository.findAll(PageRequest.of(offset, size));
+
+        val billList = billEntityPages.stream()
+                .map(Bill::new)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(billList);
     }
 }
