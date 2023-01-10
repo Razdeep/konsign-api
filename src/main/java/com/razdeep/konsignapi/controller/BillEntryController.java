@@ -1,6 +1,5 @@
 package com.razdeep.konsignapi.controller;
 
-import com.google.gson.Gson;
 import com.razdeep.konsignapi.model.Bill;
 import com.razdeep.konsignapi.service.BillEntryService;
 import io.micrometer.core.annotation.Timed;
@@ -17,68 +16,65 @@ import java.util.Map;
 @RestController
 public class BillEntryController {
 
-    private final Gson gson;
-
     private final BillEntryService billEntryService;
 
     @Autowired
-    public BillEntryController(BillEntryService billEntryService, Gson gson) {
+    public BillEntryController(BillEntryService billEntryService) {
         this.billEntryService = billEntryService;
-        this.gson = gson;
     }
 
     @Timed
     @PostMapping(value = "/billentry")
-    public ResponseEntity<String> billEntry(@RequestBody Bill bill) {
+    public ResponseEntity<Map<String, String>> billEntry(@RequestBody Bill bill) {
         Map<String, String> body = new HashMap<>();
-        ResponseEntity<String> response;
+        ResponseEntity<Map<String, String>> response;
         if (bill.anyFieldEmpty()) {
             body.put("message", "Saving bill failed because all fields are not properly filled");
-            response = new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_ACCEPTABLE);
+            response = new ResponseEntity<>(body, HttpStatus.NOT_ACCEPTABLE);
         } else if (billEntryService.enterBill(bill)) {
             body.put("message", "Successfully saved bill");
-            response = new ResponseEntity<>(gson.toJson(body), HttpStatus.OK);
+            response = new ResponseEntity<>(body, HttpStatus.OK);
         } else {
             body.put("message", "Saving bill failed");
-            response = new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_ACCEPTABLE);
+            response = new ResponseEntity<>(body, HttpStatus.NOT_ACCEPTABLE);
         }
         return response;
     }
 
     @Timed
     @GetMapping(value = "/getBill")
-    public ResponseEntity<String> getBill(@RequestParam(name = "billNo") String billNo) {
+    public ResponseEntity<Object> getBill(@RequestParam(name = "billNo") String billNo) {
         val bill = billEntryService.getBill(billNo);
         Map<String, String> body = new HashMap<>();
         if (bill == null) {
             body.put("message", "Bill not found");
-            return new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(gson.toJson(bill), HttpStatus.OK);
+        return new ResponseEntity<>(bill, HttpStatus.OK);
     }
 
     @Timed
     @GetMapping(value = "/getAllBills/{offset}/{pageSize}")
-    public ResponseEntity<String> getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
+    public ResponseEntity<Object> getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
         val bills = billEntryService.getAllBills(offset, pageSize);
         if (bills == null) {
             Map<String, String> body = new HashMap<>();
             body.put("message", "Bill not found");
-            return new ResponseEntity<>(gson.toJson(body), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(gson.toJson(bills), HttpStatus.OK);
+        return new ResponseEntity<>(bills, HttpStatus.OK);
     }
 
     @Timed
     @DeleteMapping(value = "/bill")
-    public ResponseEntity<String> deleteBill(@RequestParam(name = "billNo") String billNo) {
+    public ResponseEntity<Map<String, String>> deleteBill(@RequestParam(name = "billNo") String billNo) {
         Map<String, String> body = new HashMap<>();
         if (billEntryService.deleteBill(billNo)) {
             body.put("message", "Successfully deleted bill " + billNo);
         } else {
             body.put("message", "Bill " + billNo + " is already deleted.");
         }
-        return new ResponseEntity<>(gson.toJson(body), HttpStatus.OK);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
     @GetMapping(value = "/")
