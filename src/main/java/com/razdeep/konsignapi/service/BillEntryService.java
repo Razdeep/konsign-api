@@ -139,6 +139,6 @@ public class BillEntryService {
                 .map(Bill::new)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(billList);
+        return new PageImpl<>(billList, billEntityPages.getPageable(), billEntityPages.getTotalElements());
     }
 }
