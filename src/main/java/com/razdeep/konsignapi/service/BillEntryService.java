@@ -11,10 +11,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.Pageable;
-import java.awt.print.Printable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,8 +18,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class BillEntryService {
-
-
     private final BuyerService buyerService;
     private final SupplierService supplierService;
     private final TransportService transportService;

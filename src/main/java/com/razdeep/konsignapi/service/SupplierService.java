@@ -34,6 +34,9 @@ public class SupplierService {
     }
 
     public boolean addSupplier(Supplier supplier) {
+        if (!supplierRepository.findAllSupplierBySupplierName(supplier.getSupplierName()).isEmpty()) {
+            return false;
+        }
         if (supplier.getSupplierId().isEmpty()) {
             if (supplier.getSupplierName().isEmpty()) {
                 return false;

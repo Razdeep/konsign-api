@@ -35,6 +35,11 @@ public class BuyerService {
 
 
     public boolean addBuyer(Buyer buyer) {
+
+        if (!buyerRepository.findAllBuyerByBuyerName(buyer.getBuyerName()).isEmpty()) {
+            return false;
+        }
+
         if (buyer.getBuyerId().isEmpty()) {
             if (buyer.getBuyerName().isEmpty()) {
                 return false;

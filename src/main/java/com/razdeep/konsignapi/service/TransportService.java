@@ -29,6 +29,9 @@ public class TransportService {
     }
 
     public boolean addTransport(Transport transport) {
+        if (!transportRepository.findAllTransportByTransportName(transport.getTransportName()).isEmpty()) {
+            return false;
+        }
         if (transport.getTransportId().isEmpty()) {
             if (transport.getTransportName().isEmpty()) {
                 return false;
