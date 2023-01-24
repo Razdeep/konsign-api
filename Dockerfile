@@ -1,23 +1,23 @@
 FROM eclipse-temurin:17-jdk-alpine as builder
 
-#RUN apk update && apk add --update docker openrc
-
-#RUN rc-update add docker boot
-
 RUN mkdir /src
 
 WORKDIR /src
-
 COPY . .
-
 RUN ./mvnw clean package
 
-FROM eclipse-temurin:17-jdk-alpine
+# ----------------------------------------------
 
-RUN mkdir -p /app
+FROM eclipse-temurin:17-jre-alpine as pod
 
-WORKDIR /app
+RUN adduser -D nonroot
 
-COPY --from=builder /src/target/konsign-api-0.0.1-SNAPSHOT.jar /app
+USER nonroot
+
+RUN mkdir -p /home/nonroot/app
+
+WORKDIR /home/nonroot/app
+
+COPY --from=builder /src/target/konsign-api-0.0.1-SNAPSHOT.jar /home/nonroot/app
 
 CMD ["java", "-Dspring.profiles.active=dev", "-jar", "konsign-api-0.0.1-SNAPSHOT.jar"]
