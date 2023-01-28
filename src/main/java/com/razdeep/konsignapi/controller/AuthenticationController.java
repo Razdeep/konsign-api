@@ -13,10 +13,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -37,7 +41,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                     authenticationRequest.getPassword()));
@@ -51,7 +55,36 @@ public class AuthenticationController {
         final String jwt = jwtUtilService.generateToken(konsignUserDetails);
         final AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         authenticationResponse.setJwt(jwt);
+
+        Cookie cookie = new Cookie("refresh-token", jwtUtilService.doGenerateRefreshToken(new HashMap<>(), authenticationRequest.getUsername()));
+
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+
+//        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
         return ResponseEntity.ok(authenticationResponse);
+    }
+
+    @GetMapping(value = "/refreshtoken")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+
+        Optional<String> refreshTokenOptional = Arrays.stream(request.getCookies())
+                .filter(cookie -> cookie.getName().equals("refresh-token"))
+                .map(Cookie::getValue)
+                .findAny();
+
+        if (refreshTokenOptional.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String refreshToken = refreshTokenOptional.get();
+        if (!jwtUtilService.validateToken(refreshToken, null)) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(new AuthenticationResponse());
     }
 
     @PostMapping(value = "/register")
