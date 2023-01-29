@@ -1,6 +1,3 @@
-# This workflow will do a clean install of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: Build Image
 
 on:
@@ -21,23 +18,11 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
       - name: Docker Login
-        # You may pin to the exact commit or the version.
-        # uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         uses: docker/login-action@v1.10.0
         with:
-          # Username used to log against the Docker registry
-          username: razdeep
-          # Password or personal access token used to log against the Docker registry
+          username: ${{ DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       - name: Building docker image
-        run: docker build -t razdeep/konsign-api:${{ github.ref_name }}.${{ github.sha }} .
+        run: docker build -t ${{ DOCKERHUB_USERNAME }}/konsign-api:${{ github.ref_name }}.${{ github.sha }} .
       - name: Pushing docker image to dockerhub
-        run: docker push razdeep/konsign-api:${{ github.ref_name }}.${{ github.sha }}
-      - name: Deploying on heroku
-        # uses: gonuit/heroku-docker-deploy@9ab97585f979857642d66612a2ae4062b3347d53
-        # This action rebuild the docker image again (though it is built earlier once) and pushes to heroku
-        uses: gonuit/heroku-docker-deploy@v1.3.3
-        with:
-          heroku_app_name: konsign-api
-          email: rrajdeeproychowdhury@gmail.com
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+        run: docker push ${{ DOCKERHUB_USERNAME }}/konsign-api:${{ github.ref_name }}.${{ github.sha }}
