@@ -7,7 +7,13 @@ import com.razdeep.konsignapi.model.UserRegistration;
 import com.razdeep.konsignapi.service.AuthenticationService;
 import com.razdeep.konsignapi.service.JwtUtilService;
 import com.razdeep.konsignapi.service.KonsignUserDetailsService;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.impl.DefaultClaims;
+import lombok.val;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,6 +32,7 @@ import java.util.Optional;
 @RestController
 public class AuthenticationController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
 
     private final AuthenticationManager authenticationManager;
     private final KonsignUserDetailsService konsignUserDetailsService;
@@ -71,6 +78,10 @@ public class AuthenticationController {
     @GetMapping(value = "/refreshtoken")
     public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
 
+        if (request.getCookies() == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         Optional<String> refreshTokenOptional = Arrays.stream(request.getCookies())
                 .filter(cookie -> cookie.getName().equals("refresh-token"))
                 .map(Cookie::getValue)
@@ -81,10 +92,24 @@ public class AuthenticationController {
         }
 
         String refreshToken = refreshTokenOptional.get();
-        if (!jwtUtilService.validateToken(refreshToken, null)) {
-            return ResponseEntity.badRequest().build();
+        LOG.info(String.format("refresh token: %s", refreshToken));
+
+        try {
+            if (jwtUtilService.validateToken(refreshToken, null)) {
+                jwtUtilService.validateToken(jwtUtilService.extractJwtFromRequest(request), null);
+            }
+        } catch (ExpiredJwtException ex) {
+            DefaultClaims claims = (DefaultClaims) request.getAttribute("claims");
+            val claimsMap = jwtUtilService.getMapFromIoJsonWebTokenClaims(claims);
+            String jwtToken = jwtUtilService.doGenerateRefreshToken(claimsMap, (String) claimsMap.get("sub"));
+            AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+            authenticationResponse.setJwt(jwtToken);
+            return ResponseEntity.ok(authenticationResponse);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return ResponseEntity.ok(new AuthenticationResponse());
+
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping(value = "/register")

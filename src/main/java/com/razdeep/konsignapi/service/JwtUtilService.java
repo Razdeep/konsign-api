@@ -1,11 +1,14 @@
 package com.razdeep.konsignapi.service;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +16,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtilService {
+
+    private static final String BEARER_KEYWORD = "Bearer ";
 
     @Value("${jwt.secret}")
     private String secret;
@@ -70,5 +75,23 @@ public class JwtUtilService {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationInMillis))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
+    }
+
+    public Map<String, Object> getMapFromIoJsonWebTokenClaims(DefaultClaims claims) {
+        Map<String, Object> expectedMap = new HashMap<String, Object>();
+        for (Map.Entry<String, Object> entry : claims.entrySet()) {
+            expectedMap.put(entry.getKey(), entry.getValue());
+        }
+        return expectedMap;
+    }
+
+    public String extractJwtFromRequest(HttpServletRequest request) {
+        String authorizationHeaderStr = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if (authorizationHeaderStr == null || !authorizationHeaderStr.startsWith(BEARER_KEYWORD)) {
+            throw new JwtException("jwt not found");
+        }
+
+        return authorizationHeaderStr.substring(BEARER_KEYWORD.length());
     }
 }

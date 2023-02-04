@@ -25,8 +25,6 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private static final Logger LOG = LoggerFactory.getLogger(JwtFilter.class);
-    private static final String BEARER_KEYWORD = "Bearer ";
-
 
     private final JwtUtilService jwtUtilService;
     private final KonsignUserDetailsService konsignUserDetailsService;
@@ -40,14 +38,15 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        String authorizationHeaderStr = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authorizationHeaderStr == null || !authorizationHeaderStr.startsWith(BEARER_KEYWORD)) {
+        String extractedJwtToken = null;
+        try {
+            extractedJwtToken = jwtUtilService.extractJwtFromRequest(request);
+        } catch (Exception ex) {
+            ex.printStackTrace();
             filterChain.doFilter(request, response);
             return;
         }
 
-        String extractedJwtToken = authorizationHeaderStr.substring(BEARER_KEYWORD.length());
         UserDetails konsignUserDetails = null;
         try {
             String extractedUsername = jwtUtilService.extractUsername(extractedJwtToken);
