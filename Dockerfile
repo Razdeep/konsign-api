@@ -10,14 +10,15 @@ RUN ./mvnw clean package
 
 FROM eclipse-temurin:17-jre-alpine as pod
 
-RUN adduser -D nonroot
+ENV PORT=8080
+ENV PROFILE=dev
+
+RUN adduser -D nonroot && mkdir -p /home/nonroot/app
 
 USER nonroot
-
-RUN mkdir -p /home/nonroot/app
 
 WORKDIR /home/nonroot/app
 
 COPY --from=builder /src/target/konsign-api-0.0.1-SNAPSHOT.jar /home/nonroot/app
 
-CMD ["java", "-Dspring.profiles.active=dev", "-jar", "konsign-api-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Dspring.profiles.active=$PROFILE", "-jar", "konsign-api-0.0.1-SNAPSHOT.jar"]
