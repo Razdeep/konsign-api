@@ -5,4 +5,5 @@ import lombok.Data;
 @Data
 public class ResponseVerdict {
     String message;
+    Object data;
 }

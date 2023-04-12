@@ -10,9 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @CrossOrigin
 @RestController
 public class BillEntryController {
@@ -45,26 +42,28 @@ public class BillEntryController {
 
     @Timed
     @GetMapping(value = "/getBill")
-    public ResponseEntity<Object> getBill(@RequestParam(name = "billNo") String billNo) {
+    public ResponseEntity<ResponseVerdict> getBill(@RequestParam(name = "billNo") String billNo) {
         val bill = billEntryService.getBill(billNo);
-        Map<String, String> body = new HashMap<>();
+        ResponseVerdict responseVerdict = new ResponseVerdict();
         if (bill == null) {
-            body.put("message", "Bill not found");
-            return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+            responseVerdict.setMessage("Bill not found");
+            return new ResponseEntity<>(responseVerdict, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(bill, HttpStatus.OK);
+        responseVerdict.setData(bill);
+        return new ResponseEntity<>(responseVerdict, HttpStatus.OK);
     }
 
     @Timed
     @GetMapping(value = "/getAllBills/{offset}/{pageSize}")
-    public ResponseEntity<Object> getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
+    public ResponseEntity<ResponseVerdict> getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
         val bills = billEntryService.getAllBills(offset, pageSize);
+        ResponseVerdict responseVerdict = new ResponseVerdict();
         if (bills == null) {
-            Map<String, String> body = new HashMap<>();
-            body.put("message", "Bill not found");
-            return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+            responseVerdict.setMessage("Bill not found");
+            return new ResponseEntity<>(responseVerdict, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(bills, HttpStatus.OK);
+        responseVerdict.setData(bills);
+        return new ResponseEntity<>(responseVerdict, HttpStatus.OK);
     }
 
     @Timed
