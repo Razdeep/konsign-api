@@ -1,6 +1,7 @@
 package com.razdeep.konsignapi.controller;
 
 import com.razdeep.konsignapi.model.Bill;
+import com.razdeep.konsignapi.model.ResponseVerdict;
 import com.razdeep.konsignapi.service.BillEntryService;
 import io.micrometer.core.annotation.Timed;
 import lombok.val;
@@ -24,19 +25,20 @@ public class BillEntryController {
     }
 
     @Timed
-    @PostMapping(value = "/billentry")
-    public ResponseEntity<Map<String, String>> billEntry(@RequestBody Bill bill) {
-        Map<String, String> body = new HashMap<>();
-        ResponseEntity<Map<String, String>> response;
+    @PostMapping(value = "/addBillEntry")
+    public ResponseEntity<ResponseVerdict> addBillEntry(@RequestBody Bill bill) {
+        ResponseEntity<ResponseVerdict> response;
+        ResponseVerdict responseVerdict = new ResponseVerdict();
+
         if (bill.anyFieldEmpty()) {
-            body.put("message", "Saving bill failed because all fields are not properly filled");
-            response = new ResponseEntity<>(body, HttpStatus.NOT_ACCEPTABLE);
+            responseVerdict.setMessage("Saving bill failed because all fields are not properly filled");
+            response = new ResponseEntity<>(responseVerdict, HttpStatus.NOT_ACCEPTABLE);
         } else if (billEntryService.enterBill(bill)) {
-            body.put("message", "Successfully saved bill");
-            response = new ResponseEntity<>(body, HttpStatus.OK);
+            responseVerdict.setMessage("Successfully saved bill");
+            response = new ResponseEntity<>(responseVerdict, HttpStatus.OK);
         } else {
-            body.put("message", "Saving bill failed");
-            response = new ResponseEntity<>(body, HttpStatus.NOT_ACCEPTABLE);
+            responseVerdict.setMessage("Saving bill failed");
+            response = new ResponseEntity<>(responseVerdict, HttpStatus.NOT_ACCEPTABLE);
         }
         return response;
     }
@@ -67,14 +69,14 @@ public class BillEntryController {
 
     @Timed
     @DeleteMapping(value = "/bill")
-    public ResponseEntity<Map<String, String>> deleteBill(@RequestParam(name = "billNo") String billNo) {
-        Map<String, String> body = new HashMap<>();
+    public ResponseEntity<ResponseVerdict> deleteBill(@RequestParam(name = "billNo") String billNo) {
+        ResponseVerdict responseVerdict = new ResponseVerdict();
         if (billEntryService.deleteBill(billNo)) {
-            body.put("message", "Successfully deleted bill " + billNo);
+            responseVerdict.setMessage("Successfully deleted bill " + billNo);
         } else {
-            body.put("message", "Bill " + billNo + " is already deleted.");
+            responseVerdict.setMessage("Bill " + billNo + " is already deleted.");
         }
-        return new ResponseEntity<>(body, HttpStatus.OK);
+        return new ResponseEntity<>(responseVerdict, HttpStatus.OK);
     }
 
     @GetMapping(value = "/")
