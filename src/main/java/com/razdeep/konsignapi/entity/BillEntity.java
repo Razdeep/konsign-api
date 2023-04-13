@@ -3,7 +3,7 @@ package com.razdeep.konsignapi.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -25,13 +25,13 @@ public class BillEntity extends BaseTimestamp {
     @JoinColumn(name = "fk_buyer_id", nullable = false)
     private BuyerEntity buyerEntity;
 
-    private Date billDate;
+    private LocalDate billDate;
 
     @ManyToOne
     @JoinColumn(name = "fk_transport_id", nullable = false)
     private TransportEntity transportEntity;
 
-    private Date lrDate;
+    private LocalDate lrDate;
     private Double billAmount;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "billEntry")
