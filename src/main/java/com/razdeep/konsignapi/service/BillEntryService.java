@@ -1,17 +1,18 @@
 package com.razdeep.konsignapi.service;
 
 import com.razdeep.konsignapi.entity.*;
+import com.razdeep.konsignapi.mapper.BillMapper;
 import com.razdeep.konsignapi.model.Bill;
 import com.razdeep.konsignapi.model.LrPm;
 import com.razdeep.konsignapi.repository.BillEntryRepository;
 import lombok.val;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,6 +20,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class BillEntryService {
+
+    private final BillMapper billMapper;
+
     private final BuyerService buyerService;
     private final SupplierService supplierService;
     private final TransportService transportService;
@@ -30,6 +34,7 @@ public class BillEntryService {
         this.supplierService = supplierService;
         this.transportService = transportService;
         this.billEntryRepository = billEntryRepository;
+        this.billMapper = Mappers.getMapper(BillMapper.class);
     }
 
     public boolean enterBill(Bill bill) {
@@ -90,6 +95,8 @@ public class BillEntryService {
                 .lrPmList(lrPmList)
                 .lrDate(billEntry.getLrDate())
                 .build();
+
+//        return billMapper.billEntityToBill(billEntry);
     }
 
     public boolean deleteBill(String billNo) {
