@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,9 +17,9 @@ public class Bill {
     String supplierName;
     String buyerName;
     String billNo;
-    String billDate;
+    Date billDate;
     String transportName;
-    String lrDate;
+    Date lrDate;
 
     List<LrPm> lrPmList;
     Double billAmount;

@@ -3,6 +3,7 @@ package com.razdeep.konsignapi.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,7 +18,7 @@ public class CollectionVoucherEntity extends BaseTimestamp {
     @Id
     private String voucherNo;
 
-    private String voucherDate;
+    private Date voucherDate;
 
     @OneToOne
     @JoinColumn(name = "buyer_buyer_id")

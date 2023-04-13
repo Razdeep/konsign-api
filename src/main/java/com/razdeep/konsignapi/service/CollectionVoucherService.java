@@ -7,14 +7,14 @@ import com.razdeep.konsignapi.model.CollectionVoucher;
 import com.razdeep.konsignapi.model.CollectionVoucherItem;
 import com.razdeep.konsignapi.model.PendingBill;
 import com.razdeep.konsignapi.repository.CollectionVoucherRepository;
+import lombok.Data;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.validation.constraints.Null;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -43,6 +43,8 @@ public class CollectionVoucherService {
                 .voucherDate(collectionVoucher.getVoucherDate())
                 .buyer(buyerService.getBuyerByBuyerName(collectionVoucher.getBuyerName()))
                 .build();
+
+//        collectionVoucherEntity.setCreationTimestamp(getVoucherByVoucherNo(collectionVoucher.getVoucherNo()));
 
         List<CollectionVoucherItemEntity> collectionVoucherItemEntityList;
         AtomicInteger collectionVoucherItemIndex = new AtomicInteger();
@@ -125,9 +127,14 @@ public class CollectionVoucherService {
         return res;
     }
 
+    @Nullable
     public CollectionVoucher getVoucherByVoucherNo(String voucherNo) {
         CollectionVoucherEntity collectionVoucherEntity = collectionVoucherRepository
                 .getCollectionVoucherByVoucherNo(voucherNo);
+
+        if (collectionVoucherEntity == null) {
+            return null;
+        }
 
         val collectionVoucherItemList = collectionVoucherEntity.getCollectionVoucherItemEntityList().stream()
                 .map(collectionVoucherItemEntity -> CollectionVoucherItem.builder()

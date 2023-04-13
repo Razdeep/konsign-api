@@ -23,5 +23,5 @@ springdoc:
 jwt:
   secret: rajdeep123
 #  jwtExpirationInMillis: 0
-  jwtExpirationInMillis: 900000
+  jwtExpirationInMillis: 9000000
   refreshTokenExpirationInMillis: 21600000
