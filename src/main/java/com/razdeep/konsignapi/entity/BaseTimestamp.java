@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class BaseTimestamp {
 
     @CreationTimestamp
-    @Column(name = "creation_timestamp")
+    @Column(name = "creation_timestamp", updatable = false, nullable = false)
     private LocalDateTime creationTimestamp;
 
     @UpdateTimestamp
