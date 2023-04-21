@@ -79,6 +79,9 @@ public class JwtUtilService {
 
     public Map<String, Object> getMapFromIoJsonWebTokenClaims(DefaultClaims claims) {
         Map<String, Object> expectedMap = new HashMap<String, Object>();
+        if (claims == null) {
+            return expectedMap;
+        }
         for (Map.Entry<String, Object> entry : claims.entrySet()) {
             expectedMap.put(entry.getKey(), entry.getValue());
         }

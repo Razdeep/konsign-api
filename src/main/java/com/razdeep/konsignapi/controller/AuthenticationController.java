@@ -95,15 +95,14 @@ public class AuthenticationController {
 
         try {
             if (jwtUtilService.validateToken(refreshToken, null)) {
-                jwtUtilService.validateToken(jwtUtilService.extractAccessTokenFromRequest(request), null);
+//                jwtUtilService.validateToken(jwtUtilService.extractAccessTokenFromRequest(request), null);
+                DefaultClaims claims = (DefaultClaims) request.getAttribute("claims");
+                val claimsMap = jwtUtilService.getMapFromIoJsonWebTokenClaims(claims);
+                String jwtToken = jwtUtilService.doGenerateRefreshToken(claimsMap, (String) claimsMap.get("sub"));
+                AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+                authenticationResponse.setAccessToken(jwtToken);
+                return ResponseEntity.ok(authenticationResponse);
             }
-        } catch (ExpiredJwtException ex) {
-            DefaultClaims claims = (DefaultClaims) request.getAttribute("claims");
-            val claimsMap = jwtUtilService.getMapFromIoJsonWebTokenClaims(claims);
-            String jwtToken = jwtUtilService.doGenerateRefreshToken(claimsMap, (String) claimsMap.get("sub"));
-            AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-            authenticationResponse.setAccessToken(jwtToken);
-            return ResponseEntity.ok(authenticationResponse);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

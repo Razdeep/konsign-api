@@ -7,6 +7,7 @@ import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,6 +52,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         UserDetails konsignUserDetails = null;
         try {
+            if (!jwtUtilService.validateToken(extractedJwtToken, konsignUserDetails)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             String extractedUsername = jwtUtilService.extractUsername(extractedJwtToken);
 
             konsignUserDetails = konsignUserDetailsService.loadUserByUsername(extractedUsername);
@@ -59,12 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
-
-            if (!jwtUtilService.validateToken(extractedJwtToken, konsignUserDetails)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-        } catch (ExpiredJwtException ex) {
+        } catch (ExpiredJwtException | BadCredentialsException ex) {
             ex.printStackTrace();
             LOG.debug(ex.toString());
             String isRefreshToken = request.getHeader("isRefreshToken");
@@ -81,7 +82,9 @@ public class JwtFilter extends OncePerRequestFilter {
             // allow for Refresh Token creation if following conditions are true.
             if (isRefreshToken != null && isRefreshToken.equals("true") && requestURL.contains("refreshtoken")
                 && jwtUtilService.validateToken(extractedRefreshToken, null)) {
-                allowForRefreshToken(ex, request);
+//                allowForRefreshToken(ex, request);
+                // TODO: Hack fix this later
+                allowForRefreshToken(null, request);
                 filterChain.doFilter(request, response);
                 return;
             }
@@ -114,7 +117,7 @@ public class JwtFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                 null, null, null);
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        request.setAttribute("claims", ex.getClaims());
+//        request.setAttribute("claims", ex.getClaims());
 
     }
 }
