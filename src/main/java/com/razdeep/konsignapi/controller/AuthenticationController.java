@@ -13,7 +13,6 @@ import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -59,9 +58,9 @@ public class AuthenticationController {
         }
 
         final UserDetails konsignUserDetails = konsignUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        final String jwt = jwtUtilService.generateToken(konsignUserDetails);
+        final String accessToken = jwtUtilService.generateToken(konsignUserDetails);
         final AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setJwt(jwt);
+        authenticationResponse.setAccessToken(accessToken);
 
         Cookie cookie = new Cookie("refresh-token", jwtUtilService.doGenerateRefreshToken(new HashMap<>(), authenticationRequest.getUsername()));
 
@@ -96,14 +95,14 @@ public class AuthenticationController {
 
         try {
             if (jwtUtilService.validateToken(refreshToken, null)) {
-                jwtUtilService.validateToken(jwtUtilService.extractJwtFromRequest(request), null);
+                jwtUtilService.validateToken(jwtUtilService.extractAccessTokenFromRequest(request), null);
             }
         } catch (ExpiredJwtException ex) {
             DefaultClaims claims = (DefaultClaims) request.getAttribute("claims");
             val claimsMap = jwtUtilService.getMapFromIoJsonWebTokenClaims(claims);
             String jwtToken = jwtUtilService.doGenerateRefreshToken(claimsMap, (String) claimsMap.get("sub"));
             AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-            authenticationResponse.setJwt(jwtToken);
+            authenticationResponse.setAccessToken(jwtToken);
             return ResponseEntity.ok(authenticationResponse);
         } catch (Exception ex) {
             ex.printStackTrace();

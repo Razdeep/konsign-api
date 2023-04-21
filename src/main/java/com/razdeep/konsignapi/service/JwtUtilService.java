@@ -85,7 +85,7 @@ public class JwtUtilService {
         return expectedMap;
     }
 
-    public String extractJwtFromRequest(HttpServletRequest request) {
+    public String extractAccessTokenFromRequest(HttpServletRequest request) {
         String authorizationHeaderStr = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authorizationHeaderStr == null || !authorizationHeaderStr.startsWith(BEARER_KEYWORD)) {

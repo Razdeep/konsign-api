@@ -7,7 +7,6 @@ import lombok.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,9 +16,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -36,11 +38,11 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         String extractedJwtToken = null;
         try {
-            extractedJwtToken = jwtUtilService.extractJwtFromRequest(request);
+            extractedJwtToken = jwtUtilService.extractAccessTokenFromRequest(request);
         } catch (Exception ex) {
             ex.printStackTrace();
             filterChain.doFilter(request, response);
@@ -67,8 +69,18 @@ public class JwtFilter extends OncePerRequestFilter {
             LOG.debug(ex.toString());
             String isRefreshToken = request.getHeader("isRefreshToken");
             String requestURL = request.getRequestURL().toString();
+            Optional<String> refreshTokenOptional = Arrays.stream(request.getCookies())
+                    .filter(cookie -> cookie.getName().equals("refresh-token"))
+                    .map(Cookie::getValue)
+                    .findAny();
+            if (refreshTokenOptional.isEmpty()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            String extractedRefreshToken = refreshTokenOptional.get();
             // allow for Refresh Token creation if following conditions are true.
-            if (isRefreshToken != null && isRefreshToken.equals("true") && requestURL.contains("refreshtoken")) {
+            if (isRefreshToken != null && isRefreshToken.equals("true") && requestURL.contains("refreshtoken")
+                && jwtUtilService.validateToken(extractedRefreshToken, null)) {
                 allowForRefreshToken(ex, request);
                 filterChain.doFilter(request, response);
                 return;
