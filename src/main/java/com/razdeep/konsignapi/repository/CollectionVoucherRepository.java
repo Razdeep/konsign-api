@@ -16,5 +16,9 @@ public interface CollectionVoucherRepository extends JpaRepository<CollectionVou
             "where collection_vouchers.buyer_buyer_id = ?1", nativeQuery = true)
     List<CollectionVoucherEntity> getCollectedAmountInfoForBuyerId(String buyerId);
 
+    @Query(value = "select sum(amount_collected) " +
+            "from collection_voucher_item where bill_bill_no = ?1", nativeQuery = true)
+    Double getCollectedAmountForBillNo(String BillNo);
+
     CollectionVoucherEntity getCollectionVoucherByVoucherNo(String voucherNo);
 }

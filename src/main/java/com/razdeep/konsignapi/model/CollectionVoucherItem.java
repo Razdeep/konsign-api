@@ -9,11 +9,18 @@ public class CollectionVoucherItem {
 
     String billNo;
 
+    String supplierName;
+
+    Double billAmount;
+
+    Double pendingBillAmount;
+
     Double amountCollected;
 
     String bank;
 
     String ddNo;
 
+//    @JsonFormat(pattern="yyyy-MM-dd")
     String ddDate;
 }

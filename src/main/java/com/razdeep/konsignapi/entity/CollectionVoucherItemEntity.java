@@ -3,6 +3,7 @@ package com.razdeep.konsignapi.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "collection_voucher_item")
@@ -31,5 +32,5 @@ public class CollectionVoucherItemEntity extends BaseTimestamp {
 
     String ddNo;
 
-    String ddDate;
+    LocalDate ddDate;
 }
