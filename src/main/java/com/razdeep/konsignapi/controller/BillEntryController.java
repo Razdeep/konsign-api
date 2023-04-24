@@ -6,6 +6,7 @@ import com.razdeep.konsignapi.service.BillEntryService;
 import io.micrometer.core.annotation.Timed;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,16 +55,20 @@ public class BillEntryController {
     }
 
     @Timed
+//    @Cacheable(value = "getAllBills", key = "#offset")
     @GetMapping(value = "/getAllBills/{offset}/{pageSize}")
     public ResponseEntity<ResponseVerdict> getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
+//    public ResponseVerdict getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
         val bills = billEntryService.getAllBills(offset, pageSize);
         ResponseVerdict responseVerdict = new ResponseVerdict();
         if (bills == null) {
             responseVerdict.setMessage("Bill not found");
             return new ResponseEntity<>(responseVerdict, HttpStatus.NOT_FOUND);
+//            return responseVerdict;
         }
         responseVerdict.setData(bills);
         return new ResponseEntity<>(responseVerdict, HttpStatus.OK);
+//        return responseVerdict;
     }
 
     @Timed
@@ -79,6 +84,7 @@ public class BillEntryController {
     }
 
     @GetMapping(value = "/")
+    @Cacheable(value = "welcome", key = "1")
     public ResponseEntity<String> welcome() {
         return new ResponseEntity<>("Welcome to konsign-api",
                 HttpStatus.OK);

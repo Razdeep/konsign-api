@@ -8,11 +8,13 @@ import com.razdeep.konsignapi.repository.BillEntryRepository;
 import lombok.val;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -51,8 +53,8 @@ public class BillEntryService {
                 .buyerEntity(buyerEntity)
                 .billNo(bill.getBillNo())
                 .billAmount(bill.getBillAmount())
-                .billDate(bill.getBillDate())
-                .lrDate(bill.getLrDate())
+                .billDate(LocalDate.parse(bill.getBillDate()))
+                .lrDate(LocalDate.parse(bill.getLrDate()))
                 .supplierEntity(supplierEntity)
                 .transportEntity(transportEntity)
                 .build();
@@ -88,12 +90,12 @@ public class BillEntryService {
         return Bill.builder()
                 .billNo(billEntry.getBillNo())
                 .billAmount(billEntry.getBillAmount())
-                .billDate(billEntry.getBillDate())
+                .billDate(String.valueOf(billEntry.getBillDate()))
                 .buyerName(billEntry.getBuyerEntity().getBuyerName())
                 .supplierName(billEntry.getSupplierEntity().getSupplierName())
                 .transportName(billEntry.getTransportEntity().getTransportName())
                 .lrPmList(lrPmList)
-                .lrDate(billEntry.getLrDate())
+                .lrDate(String.valueOf(billEntry.getLrDate()))
                 .build();
 
 //        return billMapper.billEntityToBill(billEntry);
@@ -126,13 +128,14 @@ public class BillEntryService {
                 .billNo(bill.getBillNo())
                 .supplierEntity(targetSupplierEntity)
                 .buyerEntity(targetBuyerEntity)
-                .billDate(bill.getBillDate())
+                .billDate(LocalDate.parse(bill.getBillDate()))
                 .transportEntity(targetTransportEntity)
-                .lrDate(bill.getLrDate())
+                .lrDate(LocalDate.parse(bill.getLrDate()))
                 .billAmount(bill.getBillAmount())
                 .lrPmEntityList(targetLrPmEntityList)
                 .build();
     }
+
 
     public Page<Bill> getAllBills(int offset, int size) {
         val billEntityPages = billEntryRepository.findAll(PageRequest.of(offset, size));

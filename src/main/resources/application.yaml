@@ -10,6 +10,12 @@ spring:
         format_sql: true
     show-sql: false
 
+redis:
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT}
+  username: ${REDIS_USERNAME}
+  password: ${REDIS_PASSWORD}
+
 management:
   endpoints:
     web:
