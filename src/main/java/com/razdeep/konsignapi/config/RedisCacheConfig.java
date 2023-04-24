@@ -24,16 +24,16 @@ import java.time.Duration;
 public class RedisCacheConfig {
 
     @Value("${redis.host}")
-    String redisHost;
+    private String redisHost;
 
     @Value("${redis.port}")
-    Integer redisPort;
+    private Integer redisPort;
 
     @Value("${redis.username}")
-    String redisUsername;
+    private String redisUsername;
 
     @Value("${redis.password}")
-    String redisPassword;
+    private String redisPassword;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
