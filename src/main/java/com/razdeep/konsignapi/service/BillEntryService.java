@@ -7,6 +7,8 @@ import com.razdeep.konsignapi.model.LrPm;
 import com.razdeep.konsignapi.repository.BillEntryRepository;
 import lombok.val;
 import org.mapstruct.factory.Mappers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class BillEntryService {
+
+    private final Logger LOG = LoggerFactory.getLogger(BillEntryService.class.getName());
 
     private final BillMapper billMapper;
 
@@ -55,8 +60,8 @@ public class BillEntryService {
                 .buyerEntity(buyerEntity)
                 .billNo(bill.getBillNo())
                 .billAmount(bill.getBillAmount())
-                .billDate(LocalDate.parse(bill.getBillDate()))
-                .lrDate(LocalDate.parse(bill.getLrDate()))
+                .billDate(bill.getBillDate())
+                .lrDate(bill.getLrDate())
                 .supplierEntity(supplierEntity)
                 .transportEntity(transportEntity)
                 .build();
@@ -93,12 +98,12 @@ public class BillEntryService {
         return Bill.builder()
                 .billNo(billEntry.getBillNo())
                 .billAmount(billEntry.getBillAmount())
-                .billDate(String.valueOf(billEntry.getBillDate()))
+                .billDate(billEntry.getBillDate())
                 .buyerName(billEntry.getBuyerEntity().getBuyerName())
                 .supplierName(billEntry.getSupplierEntity().getSupplierName())
                 .transportName(billEntry.getTransportEntity().getTransportName())
                 .lrPmList(lrPmList)
-                .lrDate(String.valueOf(billEntry.getLrDate()))
+                .lrDate(billEntry.getLrDate())
                 .build();
 
 //        return billMapper.billEntityToBill(billEntry);
@@ -131,9 +136,9 @@ public class BillEntryService {
                 .billNo(bill.getBillNo())
                 .supplierEntity(targetSupplierEntity)
                 .buyerEntity(targetBuyerEntity)
-                .billDate(LocalDate.parse(bill.getBillDate()))
+                .billDate(bill.getBillDate())
                 .transportEntity(targetTransportEntity)
-                .lrDate(LocalDate.parse(bill.getLrDate()))
+                .lrDate(bill.getLrDate())
                 .billAmount(bill.getBillAmount())
                 .lrPmEntityList(targetLrPmEntityList)
                 .build();
@@ -142,11 +147,18 @@ public class BillEntryService {
     // TODO find a way to enable the Cacheable here
 //    @Cacheable(value = "getAllBills", key = "#offset")
     public Page<Bill> getAllBills(int offset, int size) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         val billEntityPages = billEntryRepository.findAll(PageRequest.of(offset, size, Sort.Direction.ASC, "billNo"));
+        stopWatch.stop();
+        LOG.info("repository call took {} ms", stopWatch.getLastTaskTimeMillis());
 
+        stopWatch.start();
         val billList = billEntityPages.stream()
                 .map(Bill::new)
                 .collect(Collectors.toList());
+        stopWatch.stop();
+        LOG.info("repository stream api conversion took {} ms", stopWatch.getLastTaskTimeMillis());
 
         return new PageImpl<>(billList, billEntityPages.getPageable(), billEntityPages.getTotalElements());
     }

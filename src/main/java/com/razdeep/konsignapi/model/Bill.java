@@ -1,6 +1,7 @@
 package com.razdeep.konsignapi.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.razdeep.konsignapi.entity.BillEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonPropertyOrder({ "billNo" })
 public class Bill {
 
     @JsonProperty("supplierName")
@@ -28,13 +30,13 @@ public class Bill {
     private String billNo;
 
     @JsonProperty("billDate")
-    private String billDate;
+    private LocalDate billDate;
 
     @JsonProperty("transportName")
     private String transportName;
 
     @JsonProperty("lrDate")
-    private String lrDate;
+    private LocalDate lrDate;
 
     @JsonProperty("lrPmList")
     private List<LrPm> lrPmList;
@@ -46,9 +48,9 @@ public class Bill {
         this.supplierName = other.getSupplierEntity().getSupplierName();
         this.buyerName = other.getBuyerEntity().getBuyerName();
         this.billNo = other.getBillNo();
-        this.billDate = String.valueOf(other.getBillDate());
+        this.billDate = other.getBillDate();
         this.transportName = other.getTransportEntity().getTransportName();
-        this.lrDate = String.valueOf(other.getLrDate());
+        this.lrDate = other.getLrDate();
         this.lrPmList = other.getLrPmEntityList().stream().map(lrPmEntity
                 -> new LrPm(lrPmEntity.getLr(), lrPmEntity.getPm())).collect(Collectors.toList());
         this.billAmount = other.getBillAmount();
