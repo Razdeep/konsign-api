@@ -12,6 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,6 +40,7 @@ public class BillEntryService {
         this.billMapper = Mappers.getMapper(BillMapper.class);
     }
 
+    // TODO make sure any change purges the value in cache
     public boolean enterBill(Bill bill) {
 
         BuyerEntity buyerEntity = buyerService.getBuyerByBuyerName(bill.getBuyerName());
@@ -76,6 +78,7 @@ public class BillEntryService {
         return true;
     }
 
+    @Cacheable(value = "getBill", key = "#billNo")
     public Bill getBill(String billNo) {
         val billEntryOptional = billEntryRepository.findById(billNo);
         if (billEntryOptional.isEmpty()) {
@@ -136,9 +139,10 @@ public class BillEntryService {
                 .build();
     }
 
-
+    // TODO find a way to enable the Cacheable here
+//    @Cacheable(value = "getAllBills", key = "#offset")
     public Page<Bill> getAllBills(int offset, int size) {
-        val billEntityPages = billEntryRepository.findAll(PageRequest.of(offset, size));
+        val billEntityPages = billEntryRepository.findAll(PageRequest.of(offset, size, Sort.Direction.ASC, "billNo"));
 
         val billList = billEntityPages.stream()
                 .map(Bill::new)

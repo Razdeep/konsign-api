@@ -55,7 +55,6 @@ public class BillEntryController {
     }
 
     @Timed
-//    @Cacheable(value = "getAllBills", key = "#offset")
     @GetMapping(value = "/getAllBills/{offset}/{pageSize}")
     public ResponseEntity<ResponseVerdict> getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
 //    public ResponseVerdict getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
