@@ -141,7 +141,7 @@ public class BillEntryService {
                 .build();
     }
 
-    @Cacheable(value = "getAllBills", key = "#offset")
+    @Cacheable(value = "getAllBills", key = "{#offset,#size}")
     public CustomPageImpl<Bill> getAllBills(int offset, int size) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
