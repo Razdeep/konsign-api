@@ -83,7 +83,6 @@ public class BillEntryController {
     }
 
     @GetMapping(value = "/")
-    @Cacheable(value = "welcome", key = "1")
     public ResponseEntity<String> welcome() {
         return new ResponseEntity<>("Welcome to konsign-api",
                 HttpStatus.OK);

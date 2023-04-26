@@ -3,6 +3,7 @@ package com.razdeep.konsignapi.service;
 import com.razdeep.konsignapi.entity.*;
 import com.razdeep.konsignapi.mapper.BillMapper;
 import com.razdeep.konsignapi.model.Bill;
+import com.razdeep.konsignapi.model.CustomPageImpl;
 import com.razdeep.konsignapi.model.LrPm;
 import com.razdeep.konsignapi.repository.BillEntryRepository;
 import lombok.val;
@@ -11,14 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -144,12 +141,12 @@ public class BillEntryService {
                 .build();
     }
 
-    // TODO find a way to enable the Cacheable here
-//    @Cacheable(value = "getAllBills", key = "#offset")
-    public Page<Bill> getAllBills(int offset, int size) {
+    @Cacheable(value = "getAllBills", key = "#offset")
+    public CustomPageImpl<Bill> getAllBills(int offset, int size) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        val billEntityPages = billEntryRepository.findAll(PageRequest.of(offset, size, Sort.Direction.ASC, "billNo"));
+        Pageable pageable = PageRequest.of(offset, size, Sort.by("billNo").descending());
+        val billEntityPages = billEntryRepository.findAll(pageable);
         stopWatch.stop();
         LOG.info("repository call took {} ms", stopWatch.getLastTaskTimeMillis());
 
@@ -160,6 +157,9 @@ public class BillEntryService {
         stopWatch.stop();
         LOG.info("repository stream api conversion took {} ms", stopWatch.getLastTaskTimeMillis());
 
-        return new PageImpl<>(billList, billEntityPages.getPageable(), billEntityPages.getTotalElements());
+        val pageNumber = billEntityPages.getPageable().getPageNumber();
+        val pageSize = billEntityPages.getPageable().getPageSize();
+
+        return new CustomPageImpl<Bill>(billList, pageNumber, pageSize, billEntityPages.getTotalElements());
     }
 }
