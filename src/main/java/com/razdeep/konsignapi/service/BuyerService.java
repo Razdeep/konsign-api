@@ -5,6 +5,7 @@ import com.razdeep.konsignapi.model.Buyer;
 import com.razdeep.konsignapi.repository.BuyerRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class BuyerService {
         this.commonService = commonService;
     }
 
+    @Cacheable(value = "getBuyers", key = "")
     public List<Buyer> getBuyers() {
         List<Buyer> result = new ArrayList<>();
         buyerRepository.findAll().forEach((buyerEntity) -> result.add(new Buyer(buyerEntity)));
