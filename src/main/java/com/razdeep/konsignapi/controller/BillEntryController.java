@@ -5,15 +5,20 @@ import com.razdeep.konsignapi.model.ResponseVerdict;
 import com.razdeep.konsignapi.service.BillEntryService;
 import io.micrometer.core.annotation.Timed;
 import lombok.val;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
+
 
 @CrossOrigin
 @RestController
 public class BillEntryController {
+
+    private final static Logger LOG = LoggerFactory.getLogger(BillEntryController.class.getName());
 
     private final BillEntryService billEntryService;
 
@@ -57,17 +62,18 @@ public class BillEntryController {
     @Timed
     @GetMapping(value = "/getAllBills/{offset}/{pageSize}")
     public ResponseEntity<ResponseVerdict> getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
-//    public ResponseVerdict getAllBills(@PathVariable int offset, @PathVariable int pageSize) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         val bills = billEntryService.getAllBills(offset, pageSize);
+        stopWatch.stop();
+        LOG.info("billEntryService.getAllBills() took " + stopWatch.getLastTaskTimeMillis() + " ms");
         ResponseVerdict responseVerdict = new ResponseVerdict();
         if (bills == null) {
             responseVerdict.setMessage("Bill not found");
             return new ResponseEntity<>(responseVerdict, HttpStatus.NOT_FOUND);
-//            return responseVerdict;
         }
         responseVerdict.setData(bills);
         return new ResponseEntity<>(responseVerdict, HttpStatus.OK);
-//        return responseVerdict;
     }
 
     @Timed
