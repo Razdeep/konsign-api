@@ -5,6 +5,7 @@ import com.razdeep.konsignapi.model.Supplier;
 import com.razdeep.konsignapi.repository.SupplierRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class SupplierService {
         return supplierRepository.findById(supplierId).isPresent();
     }
 
+    @Cacheable(value = "getSuppliers", key = "")
     public List<Supplier> getSuppliers() {
         List<Supplier> result = new ArrayList<>();
         supplierRepository.findAll().forEach((supplierEntity) -> result.add(new Supplier(supplierEntity)));
