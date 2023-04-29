@@ -5,6 +5,7 @@ import com.razdeep.konsignapi.model.Supplier;
 import com.razdeep.konsignapi.repository.SupplierRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +29,14 @@ public class SupplierService {
         return supplierRepository.findById(supplierId).isPresent();
     }
 
-    @Cacheable(value = "getSuppliers", key = "")
+    @Cacheable(value = "getSuppliers")
     public List<Supplier> getSuppliers() {
         List<Supplier> result = new ArrayList<>();
         supplierRepository.findAll().forEach((supplierEntity) -> result.add(new Supplier(supplierEntity)));
         return result;
     }
 
+    @CacheEvict(value = "getSuppliers")
     public boolean addSupplier(Supplier supplier) {
         if (!supplierRepository.findAllSupplierBySupplierName(supplier.getSupplierName()).isEmpty()) {
             return false;
@@ -55,6 +57,7 @@ public class SupplierService {
         return true;
     }
 
+    @CacheEvict(value = "getSuppliers")
     public boolean deleteSupplier(String supplierId) {
         boolean wasPresent = supplierRepository.findById(supplierId).isPresent();
         if (wasPresent) {

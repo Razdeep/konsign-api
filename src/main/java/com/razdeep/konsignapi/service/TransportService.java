@@ -5,6 +5,7 @@ import com.razdeep.konsignapi.model.Transport;
 import com.razdeep.konsignapi.repository.TransportRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class TransportService {
         return transportRepository.findById(transportId).isPresent();
     }
 
+    @CacheEvict(value = "getTransports")
     public boolean addTransport(Transport transport) {
         if (!transportRepository.findAllTransportByTransportName(transport.getTransportName()).isEmpty()) {
             return false;
@@ -60,13 +62,14 @@ public class TransportService {
         return resultList == null || resultList.isEmpty() ? null : resultList.get(0);
     }
 
-    @Cacheable(value = "getTransports", key = "")
+    @Cacheable(value = "getTransports")
     public List<Transport> getTransports() {
         List<Transport> result = new ArrayList<>();
         transportRepository.findAll().forEach((transportEntity) -> result.add(new Transport(transportEntity.getTransportId(), transportEntity.getTransportName())));
         return result;
     }
 
+    @CacheEvict(value = "getTransports")
     public boolean deleteTransport(String transportId) {
         boolean wasPresent = transportRepository.findById(transportId).isPresent();
         if (wasPresent) {

@@ -5,6 +5,7 @@ import com.razdeep.konsignapi.model.Buyer;
 import com.razdeep.konsignapi.repository.BuyerRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class BuyerService {
         this.commonService = commonService;
     }
 
-    @Cacheable(value = "getBuyers", key = "")
+    @Cacheable(value = "getBuyers")
     public List<Buyer> getBuyers() {
         List<Buyer> result = new ArrayList<>();
         buyerRepository.findAll().forEach((buyerEntity) -> result.add(new Buyer(buyerEntity)));
@@ -36,6 +37,7 @@ public class BuyerService {
     }
 
 
+    @CacheEvict(value = "getBuyers")
     public boolean addBuyer(Buyer buyer) {
 
         if (!buyerRepository.findAllBuyerByBuyerName(buyer.getBuyerName()).isEmpty()) {
@@ -58,6 +60,7 @@ public class BuyerService {
         return true;
     }
 
+    @CacheEvict(value = "getBuyers")
     public boolean deleteBuyer(String buyerId) {
         boolean wasPresent = buyerRepository.findById(buyerId).isPresent();
         if (wasPresent) {
