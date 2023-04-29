@@ -36,7 +36,7 @@ public class SupplierService {
         return result;
     }
 
-    @CacheEvict(value = "getSuppliers")
+    @CacheEvict(value = "getSuppliers", allEntries = true)
     public boolean addSupplier(Supplier supplier) {
         if (!supplierRepository.findAllSupplierBySupplierName(supplier.getSupplierName()).isEmpty()) {
             return false;
@@ -57,7 +57,7 @@ public class SupplierService {
         return true;
     }
 
-    @CacheEvict(value = "getSuppliers")
+    @CacheEvict(value = "getSuppliers", allEntries = true)
     public boolean deleteSupplier(String supplierId) {
         boolean wasPresent = supplierRepository.findById(supplierId).isPresent();
         if (wasPresent) {

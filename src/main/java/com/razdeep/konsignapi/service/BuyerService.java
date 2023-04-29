@@ -37,7 +37,7 @@ public class BuyerService {
     }
 
 
-    @CacheEvict(value = "getBuyers")
+    @CacheEvict(value = "getBuyers", allEntries = true)
     public boolean addBuyer(Buyer buyer) {
 
         if (!buyerRepository.findAllBuyerByBuyerName(buyer.getBuyerName()).isEmpty()) {
@@ -60,7 +60,7 @@ public class BuyerService {
         return true;
     }
 
-    @CacheEvict(value = "getBuyers")
+    @CacheEvict(value = "getBuyers", allEntries = true)
     public boolean deleteBuyer(String buyerId) {
         boolean wasPresent = buyerRepository.findById(buyerId).isPresent();
         if (wasPresent) {

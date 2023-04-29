@@ -30,7 +30,7 @@ public class TransportService {
         return transportRepository.findById(transportId).isPresent();
     }
 
-    @CacheEvict(value = "getTransports")
+    @CacheEvict(value = "getTransports", allEntries = true)
     public boolean addTransport(Transport transport) {
         if (!transportRepository.findAllTransportByTransportName(transport.getTransportName()).isEmpty()) {
             return false;
@@ -69,7 +69,7 @@ public class TransportService {
         return result;
     }
 
-    @CacheEvict(value = "getTransports")
+    @CacheEvict(value = "getTransports", allEntries = true)
     public boolean deleteTransport(String transportId) {
         boolean wasPresent = transportRepository.findById(transportId).isPresent();
         if (wasPresent) {
