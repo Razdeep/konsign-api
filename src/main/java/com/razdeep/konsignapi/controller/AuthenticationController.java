@@ -3,6 +3,7 @@ package com.razdeep.konsignapi.controller;
 import com.razdeep.konsignapi.exception.UsernameAlreadyExists;
 import com.razdeep.konsignapi.model.AuthenticationRequest;
 import com.razdeep.konsignapi.model.AuthenticationResponse;
+import com.razdeep.konsignapi.model.ResponseVerdict;
 import com.razdeep.konsignapi.model.UserRegistration;
 import com.razdeep.konsignapi.service.AuthenticationService;
 import com.razdeep.konsignapi.service.JwtUtilService;
@@ -13,6 +14,7 @@ import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -111,12 +113,15 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity<?> register(@RequestBody UserRegistration userRegistration) {
+    public ResponseEntity<ResponseVerdict> register(@RequestBody UserRegistration userRegistration) {
+        ResponseVerdict responseVerdict = new ResponseVerdict();
         try {
             authenticationService.register(userRegistration);
         } catch (UsernameAlreadyExists e) {
-            return ResponseEntity.badRequest().body("User already exists");
+            responseVerdict.setMessage("User already exists");
+            return new ResponseEntity<>(responseVerdict, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok("Successfully registered");
+        responseVerdict.setMessage("Successfully registered");
+        return new ResponseEntity<>(responseVerdict, HttpStatus.OK);
     }
 }

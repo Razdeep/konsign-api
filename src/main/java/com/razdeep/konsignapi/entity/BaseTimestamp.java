@@ -20,4 +20,7 @@ public class BaseTimestamp {
     @Column(name = "update_timestamp")
     private LocalDateTime updateTimestamp;
 
+    @Column(name = "agency_id")
+    private String agencyId;
+
 }

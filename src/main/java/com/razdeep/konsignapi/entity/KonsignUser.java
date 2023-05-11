@@ -20,6 +20,7 @@ public class KonsignUser extends BaseTimestamp {
     private String password;
     private String emailAddress;
     private String mobile;
+    private String agencyId;
     private boolean active;
     private String roles;
     public KonsignUser() {}
@@ -29,6 +30,7 @@ public class KonsignUser extends BaseTimestamp {
         password = userRegistration.getPassword();
         emailAddress = userRegistration.getEmailAddress();
         mobile = userRegistration.getMobile();
+        agencyId = userRegistration.getAgencyId();
         active = true;
         roles = "ROLE_USER";
     }
