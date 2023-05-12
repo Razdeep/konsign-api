@@ -31,3 +31,9 @@ jwt:
 #  jwtExpirationInMillis: 0
   jwtExpirationInMillis: 9000000
   refreshTokenExpirationInMillis: 21600000
+
+konsign:
+  cookie:
+    maxAge: 604800
+    httpOnly: true
+    cookiePath: "/"

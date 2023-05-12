@@ -1,5 +1,6 @@
 package com.razdeep.konsignapi.controller;
 
+import com.razdeep.konsignapi.config.KonsignConfig;
 import com.razdeep.konsignapi.exception.UsernameAlreadyExists;
 import com.razdeep.konsignapi.model.AuthenticationRequest;
 import com.razdeep.konsignapi.model.AuthenticationResponse;
@@ -8,7 +9,6 @@ import com.razdeep.konsignapi.model.UserRegistration;
 import com.razdeep.konsignapi.service.AuthenticationService;
 import com.razdeep.konsignapi.service.JwtUtilService;
 import com.razdeep.konsignapi.service.KonsignUserDetailsService;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.impl.DefaultClaims;
 import lombok.val;
 import org.slf4j.Logger;
@@ -28,6 +28,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
+
+import com.razdeep.konsignapi.constant.KonsignConstant;
 
 @CrossOrigin
 @RestController
@@ -64,13 +66,13 @@ public class AuthenticationController {
         final AuthenticationResponse authenticationResponse = new AuthenticationResponse();
         authenticationResponse.setAccessToken(accessToken);
 
-        Cookie cookie = new Cookie("refresh-token", jwtUtilService.doGenerateRefreshToken(new HashMap<>(), authenticationRequest.getUsername()));
+        Cookie cookie = new Cookie(KonsignConstant.HEADER_REFRESH_TOKEN, jwtUtilService.doGenerateRefreshToken(new HashMap<>(), authenticationRequest.getUsername()));
 
-        cookie.setMaxAge(7 * 24 * 60 * 60);
+        cookie.setMaxAge(KonsignConfig.cookieMaxAge);
 
 //        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
+        cookie.setHttpOnly(KonsignConfig.cookieHttpOnly);
+        cookie.setPath(KonsignConfig.cookiePath);
 
         response.addCookie(cookie);
         return ResponseEntity.ok(authenticationResponse);
@@ -84,7 +86,7 @@ public class AuthenticationController {
         }
 
         Optional<String> refreshTokenOptional = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("refresh-token"))
+                .filter(cookie -> cookie.getName().equals(KonsignConstant.HEADER_REFRESH_TOKEN))
                 .map(Cookie::getValue)
                 .findAny();
 
@@ -98,7 +100,7 @@ public class AuthenticationController {
         try {
             if (jwtUtilService.validateToken(refreshToken, null)) {
 //                jwtUtilService.validateToken(jwtUtilService.extractAccessTokenFromRequest(request), null);
-                DefaultClaims claims = (DefaultClaims) request.getAttribute("claims");
+                DefaultClaims claims = (DefaultClaims) request.getAttribute(KonsignConstant.HEADER_CLAIMS);
                 val claimsMap = jwtUtilService.getMapFromIoJsonWebTokenClaims(claims);
                 String jwtToken = jwtUtilService.doGenerateRefreshToken(claimsMap, (String) claimsMap.get("sub"));
                 AuthenticationResponse authenticationResponse = new AuthenticationResponse();

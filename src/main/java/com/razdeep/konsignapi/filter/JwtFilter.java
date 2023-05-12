@@ -1,5 +1,6 @@
 package com.razdeep.konsignapi.filter;
 
+import com.razdeep.konsignapi.constant.KonsignConstant;
 import com.razdeep.konsignapi.service.JwtUtilService;
 import com.razdeep.konsignapi.service.KonsignUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -71,7 +72,7 @@ public class JwtFilter extends OncePerRequestFilter {
             String isRefreshToken = request.getHeader("isRefreshToken");
             String requestURL = request.getRequestURL().toString();
             Optional<String> refreshTokenOptional = Arrays.stream(request.getCookies())
-                    .filter(cookie -> cookie.getName().equals("refresh-token"))
+                    .filter(cookie -> cookie.getName().equals(KonsignConstant.HEADER_REFRESH_TOKEN))
                     .map(Cookie::getValue)
                     .findAny();
             if (refreshTokenOptional.isEmpty()) {
