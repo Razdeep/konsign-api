@@ -2,13 +2,11 @@ package com.razdeep.konsignapi.service;
 
 import com.razdeep.konsignapi.entity.BuyerEntity;
 import com.razdeep.konsignapi.model.Buyer;
-import com.razdeep.konsignapi.model.KonsignUserDetails;
 import com.razdeep.konsignapi.repository.BuyerRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -74,7 +72,7 @@ public class BuyerService {
     @CacheEvict(value = "getBuyers", allEntries = true)
     public boolean deleteBuyer(String buyerId) {
         String agencyId = commonService.getAgencyId();
-        boolean wasPresent = buyerRepository.findByIdAndAgencyId(buyerId, agencyId).isPresent();
+        boolean wasPresent = buyerRepository.findByBuyerIdAndAgencyId(buyerId, agencyId).isPresent();
         if (wasPresent) {
             buyerRepository.deleteById(buyerId);
         }

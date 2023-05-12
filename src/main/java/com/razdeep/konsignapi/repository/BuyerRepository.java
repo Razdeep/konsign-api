@@ -14,5 +14,5 @@ public interface BuyerRepository extends JpaRepository<BuyerEntity, String> {
 
     List<BuyerEntity> findAllByAgencyId(@NonNull String agencyId);
 
-    Optional<BuyerEntity> findByIdAndAgencyId(@NonNull String buyerId, @NonNull String agencyId);
+    Optional<BuyerEntity> findByBuyerIdAndAgencyId(@NonNull String buyerId, @NonNull String agencyId);
 }
