@@ -1,6 +1,10 @@
 package com.razdeep.konsignapi.service;
 
+import com.razdeep.konsignapi.model.KonsignUserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class CommonService {
@@ -40,5 +44,13 @@ public class CommonService {
         }
 
         return sb.toString();
+    }
+
+    public String getAgencyId() {
+        KonsignUserDetails konsignUserDetails = (KonsignUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (konsignUserDetails == null) {
+            return null;
+        }
+        return konsignUserDetails.getAgencyId();
     }
 }

@@ -29,11 +29,7 @@ public class BuyerService {
 
 
     public List<Buyer> getBuyers() {
-        KonsignUserDetails konsignUserDetails = (KonsignUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (konsignUserDetails == null) {
-            return new ArrayList<>();
-        }
-        String agencyId = konsignUserDetails.getAgencyId();
+        String agencyId = commonService.getAgencyId();
         return getBuyersByAgencyId(agencyId);
     }
 
@@ -51,8 +47,8 @@ public class BuyerService {
 
     @CacheEvict(value = "getBuyers", allEntries = true)
     public boolean addBuyer(Buyer buyer) {
-
-        if (!buyerRepository.findAllBuyerByBuyerName(buyer.getBuyerName()).isEmpty()) {
+        String agencyId = commonService.getAgencyId();
+        if (!buyerRepository.findAllBuyerByBuyerNameAndAgencyId(buyer.getBuyerName(), agencyId).isEmpty()) {
             return false;
         }
 
@@ -68,13 +64,17 @@ public class BuyerService {
             }
             buyer.setBuyerId(candidateBuyerId);
         }
-        buyerRepository.save(new BuyerEntity(buyer));
+
+        BuyerEntity buyerEntity = new BuyerEntity(buyer);
+        buyerEntity.setAgencyId(agencyId);
+        buyerRepository.save(buyerEntity);
         return true;
     }
 
     @CacheEvict(value = "getBuyers", allEntries = true)
     public boolean deleteBuyer(String buyerId) {
-        boolean wasPresent = buyerRepository.findById(buyerId).isPresent();
+        String agencyId = commonService.getAgencyId();
+        boolean wasPresent = buyerRepository.findByIdAndAgencyId(buyerId, agencyId).isPresent();
         if (wasPresent) {
             buyerRepository.deleteById(buyerId);
         }
@@ -82,7 +82,8 @@ public class BuyerService {
     }
 
     public BuyerEntity getBuyerByBuyerName(String buyerName) {
-        val resultList = buyerRepository.findAllBuyerByBuyerName(buyerName);
+        String agencyId = commonService.getAgencyId();
+        val resultList = buyerRepository.findAllBuyerByBuyerNameAndAgencyId(buyerName, agencyId);
         return resultList == null || resultList.isEmpty() ? null : resultList.get(0);
     }
 }

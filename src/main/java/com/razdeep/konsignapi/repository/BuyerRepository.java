@@ -6,10 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BuyerRepository extends JpaRepository<BuyerEntity, String> {
-    List<BuyerEntity> findAllBuyerByBuyerName(@NonNull String buyerName);
+    List<BuyerEntity> findAllBuyerByBuyerNameAndAgencyId(@NonNull String buyerName, @NonNull String agencyId);
 
     List<BuyerEntity> findAllByAgencyId(@NonNull String agencyId);
+
+    Optional<BuyerEntity> findByIdAndAgencyId(@NonNull String buyerId, @NonNull String agencyId);
 }
