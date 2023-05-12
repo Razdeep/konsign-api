@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 public class KonsignUserDetails implements UserDetails {
     private final String username;
     private final String password;
+
+    private final String agencyId;
+
     private final boolean enabled;
     private final List<GrantedAuthority> authorities;
 
@@ -20,6 +23,7 @@ public class KonsignUserDetails implements UserDetails {
         username = konsignUser.getUsername();
         password = konsignUser.getPassword();
         enabled = konsignUser.isActive();
+        agencyId = konsignUser.getAgencyId();
         authorities = Arrays.stream(konsignUser.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -58,5 +62,9 @@ public class KonsignUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public String getAgencyId() {
+        return agencyId;
     }
 }

@@ -2,11 +2,13 @@ package com.razdeep.konsignapi.service;
 
 import com.razdeep.konsignapi.entity.BuyerEntity;
 import com.razdeep.konsignapi.model.Buyer;
+import com.razdeep.konsignapi.model.KonsignUserDetails;
 import com.razdeep.konsignapi.repository.BuyerRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,10 +27,20 @@ public class BuyerService {
         this.commonService = commonService;
     }
 
-    @Cacheable(value = "getBuyers")
+
     public List<Buyer> getBuyers() {
+        KonsignUserDetails konsignUserDetails = (KonsignUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (konsignUserDetails == null) {
+            return new ArrayList<>();
+        }
+        String agencyId = konsignUserDetails.getAgencyId();
+        return getBuyersByAgencyId(agencyId);
+    }
+
+    @Cacheable(value = "getBuyers", key = "#agencyId")
+    private List<Buyer> getBuyersByAgencyId(String agencyId) {
         List<Buyer> result = new ArrayList<>();
-        buyerRepository.findAll().forEach((buyerEntity) -> result.add(new Buyer(buyerEntity)));
+        buyerRepository.findAllByAgencyId(agencyId).forEach((buyerEntity) -> result.add(new Buyer(buyerEntity)));
         return result;
     }
 

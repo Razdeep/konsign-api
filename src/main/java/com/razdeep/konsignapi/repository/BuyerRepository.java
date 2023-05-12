@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface BuyerRepository extends JpaRepository<BuyerEntity, String> {
     List<BuyerEntity> findAllBuyerByBuyerName(@NonNull String buyerName);
+
+    List<BuyerEntity> findAllByAgencyId(@NonNull String agencyId);
 }
