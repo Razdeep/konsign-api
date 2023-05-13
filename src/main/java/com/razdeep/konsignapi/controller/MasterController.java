@@ -43,7 +43,7 @@ public class MasterController {
             responseVerdict.setMessage("Successfully added supplier");
             return new ResponseEntity<>(responseVerdict, HttpStatus.OK);
         } else {
-            responseVerdict.setMessage("Failed to add supplier");
+            responseVerdict.setMessage("Failed to add supplier. Most probably because it already exists");
             return new ResponseEntity<>(responseVerdict, HttpStatus.BAD_REQUEST);
         }
     }

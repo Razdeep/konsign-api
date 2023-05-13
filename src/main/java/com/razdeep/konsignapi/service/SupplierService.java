@@ -29,16 +29,24 @@ public class SupplierService {
         return supplierRepository.findById(supplierId).isPresent();
     }
 
-    @Cacheable(value = "getSuppliers")
+
     public List<Supplier> getSuppliers() {
+        String agencyId = commonService.getAgencyId();
+        return getSupplierByAgencyId(agencyId);
+    }
+
+    @Cacheable(value = "getSuppliers", key = "#agencyId")
+    private List<Supplier> getSupplierByAgencyId(String agencyId) {
         List<Supplier> result = new ArrayList<>();
-        supplierRepository.findAll().forEach((supplierEntity) -> result.add(new Supplier(supplierEntity)));
+        supplierRepository.findAllByAgencyId(agencyId)
+                .forEach((supplierEntity) -> result.add(new Supplier(supplierEntity)));
         return result;
     }
 
     @CacheEvict(value = "getSuppliers", allEntries = true)
     public boolean addSupplier(Supplier supplier) {
-        if (!supplierRepository.findAllSupplierBySupplierName(supplier.getSupplierName()).isEmpty()) {
+        String agencyId = commonService.getAgencyId();
+        if (!supplierRepository.findAllSupplierBySupplierNameAndAgencyId(supplier.getSupplierName(), agencyId).isEmpty()) {
             return false;
         }
         if (supplier.getSupplierId().isEmpty()) {
@@ -53,13 +61,16 @@ public class SupplierService {
             }
             supplier.setSupplierId(candidateSupplierId);
         }
-        supplierRepository.save(new SupplierEntity(supplier));
+        SupplierEntity supplierEntity = new SupplierEntity(supplier);
+        supplierEntity.setAgencyId(agencyId);
+        supplierRepository.save(supplierEntity);
         return true;
     }
 
     @CacheEvict(value = "getSuppliers", allEntries = true)
     public boolean deleteSupplier(String supplierId) {
-        boolean wasPresent = supplierRepository.findById(supplierId).isPresent();
+        String agencyId = commonService.getAgencyId();
+        boolean wasPresent = supplierRepository.findSupplierBySupplierIdAndAgencyId(supplierId, agencyId).isPresent();
         if (wasPresent) {
             supplierRepository.deleteById(supplierId);
         }
@@ -67,7 +78,8 @@ public class SupplierService {
     }
 
     public SupplierEntity getSupplierBySupplierName(String supplierName) {
-        val resultList = supplierRepository.findAllSupplierBySupplierName(supplierName);
+        String agencyId = commonService.getAgencyId();
+        val resultList = supplierRepository.findAllSupplierBySupplierNameAndAgencyId(supplierName, agencyId);
         return resultList == null || resultList.isEmpty() ? null : resultList.get(0);
     }
 }
