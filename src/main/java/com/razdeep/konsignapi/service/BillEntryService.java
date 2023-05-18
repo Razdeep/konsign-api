@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
 
@@ -33,13 +35,18 @@ public class BillEntryService {
     private final BuyerService buyerService;
     private final SupplierService supplierService;
     private final TransportService transportService;
+
+    private final CommonService commonService;
     private final BillEntryRepository billEntryRepository;
 
     @Autowired
-    public BillEntryService(BuyerService buyerService, SupplierService supplierService, TransportService transportService, BillEntryRepository billEntryRepository) {
+    public BillEntryService(BuyerService buyerService, SupplierService supplierService,
+                            TransportService transportService, CommonService commonService,
+                            BillEntryRepository billEntryRepository) {
         this.buyerService = buyerService;
         this.supplierService = supplierService;
         this.transportService = transportService;
+        this.commonService = commonService;
         this.billEntryRepository = billEntryRepository;
         this.billMapper = Mappers.getMapper(BillMapper.class);
     }
@@ -85,9 +92,15 @@ public class BillEntryService {
         return true;
     }
 
-    @Cacheable(value = "getBill", key = "#billNo")
     public Bill getBill(String billNo) {
-        val billEntryOptional = billEntryRepository.findById(billNo);
+        String agencyId = commonService.getAgencyId();
+        return getBill(billNo, agencyId);
+    }
+
+    @Cacheable(value = "getBill", key = "#billNo.concat(#agencyId)")
+    public Bill getBill(String billNo, String agencyId) {
+
+        val billEntryOptional = billEntryRepository.findByBillNoAndAgencyId(billNo, agencyId);
         if (billEntryOptional.isEmpty()) {
             return null;
         }
@@ -150,12 +163,17 @@ public class BillEntryService {
                 .build();
     }
 
-    @Cacheable(value = "getAllBills", key = "{#offset,#size}")
     public CustomPageImpl<Bill> getAllBills(int offset, int size) {
+        String agencyId = commonService.getAgencyId();
+        return getAllBills(offset, size, agencyId);
+    }
+
+    @Cacheable(value = "getAllBills", key = "{#offset,#size,#agencyId}")
+    public CustomPageImpl<Bill> getAllBills(int offset, int size, String agencyId) {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         Pageable pageable = PageRequest.of(offset, size, Sort.by("billNo").descending());
-        val billEntityPages = billEntryRepository.findAll(pageable);
+        val billEntityPages = billEntryRepository.findByAgencyId(agencyId, pageable);
         stopWatch.stop();
         LOG.info("repository call took {} ms", stopWatch.getLastTaskTimeMillis());
 
