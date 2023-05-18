@@ -32,9 +32,12 @@ public class TransportService {
 
     @CacheEvict(value = "getTransports", allEntries = true)
     public boolean addTransport(Transport transport) {
-        if (!transportRepository.findAllTransportByTransportName(transport.getTransportName()).isEmpty()) {
+        String agencyId = commonService.getAgencyId();
+
+        if (!transportRepository.findAllTransportByTransportNameAndAgencyId(transport.getTransportName(), agencyId).isEmpty()) {
             return false;
         }
+
         if (transport.getTransportId().isEmpty()) {
             if (transport.getTransportName().isEmpty()) {
                 return false;
@@ -53,27 +56,33 @@ public class TransportService {
                 .transportName(transport.getTransportName())
                 .build();
 
+        transportEntity.setAgencyId(agencyId);
+
         transportRepository.save(transportEntity);
         return true;
     }
 
     public TransportEntity getTransportByTransportName(String transportName) {
-        val resultList = transportRepository.findAllTransportByTransportName(transportName);
+        String agencyId = commonService.getAgencyId();
+        val resultList = transportRepository.findAllTransportByTransportNameAndAgencyId(transportName, agencyId);
         return resultList == null || resultList.isEmpty() ? null : resultList.get(0);
     }
+
 
     @Cacheable(value = "getTransports")
     public List<Transport> getTransports() {
         List<Transport> result = new ArrayList<>();
-        transportRepository.findAll().forEach((transportEntity) -> result.add(new Transport(transportEntity.getTransportId(), transportEntity.getTransportName())));
+        String agencyId = commonService.getAgencyId();
+        transportRepository.findAllByAgencyId(agencyId).forEach((transportEntity) -> result.add(new Transport(transportEntity.getTransportId(), transportEntity.getTransportName())));
         return result;
     }
 
     @CacheEvict(value = "getTransports", allEntries = true)
     public boolean deleteTransport(String transportId) {
-        boolean wasPresent = transportRepository.findById(transportId).isPresent();
+        String agencyId = commonService.getAgencyId();
+        boolean wasPresent = transportRepository.findByTransportIdAndAgencyId(transportId, agencyId).isPresent();
         if (wasPresent) {
-            transportRepository.deleteById(transportId);
+            transportRepository.deleteByTransportIdAndAgencyId(transportId, agencyId);
         }
         return wasPresent;
     }
