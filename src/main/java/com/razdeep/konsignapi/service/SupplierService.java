@@ -39,7 +39,7 @@ public class SupplierService {
     }
 
     @Cacheable(value = "getSuppliers", key = "#agencyId")
-    private List<Supplier> getSupplierByAgencyId(String agencyId) {
+    public List<Supplier> getSupplierByAgencyId(String agencyId) {
         List<Supplier> result = new ArrayList<>();
         List<SupplierEntity> supplierEntityList = supplierRepository.findAllByAgencyId(agencyId);
         if (supplierEntityList == null) {
