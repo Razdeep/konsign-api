@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class SupplierService {
 
+    @Autowired
+    private SupplierService self;
+
     private final SupplierRepository supplierRepository;
 
     private final CommonService commonService;
@@ -32,14 +35,17 @@ public class SupplierService {
 
     public List<Supplier> getSuppliers() {
         String agencyId = commonService.getAgencyId();
-        return getSupplierByAgencyId(agencyId);
+        return self.getSupplierByAgencyId(agencyId);
     }
 
     @Cacheable(value = "getSuppliers", key = "#agencyId")
     private List<Supplier> getSupplierByAgencyId(String agencyId) {
         List<Supplier> result = new ArrayList<>();
-        supplierRepository.findAllByAgencyId(agencyId)
-                .forEach((supplierEntity) -> result.add(new Supplier(supplierEntity)));
+        List<SupplierEntity> supplierEntityList = supplierRepository.findAllByAgencyId(agencyId);
+        if (supplierEntityList == null) {
+            return result;
+        }
+        supplierEntityList.forEach((supplierEntity) -> result.add(new Supplier(supplierEntity)));
         return result;
     }
 

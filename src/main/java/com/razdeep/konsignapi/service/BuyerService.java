@@ -15,6 +15,9 @@ import java.util.List;
 @Service
 public class BuyerService {
 
+    @Autowired
+    private BuyerService self;
+
     private final BuyerRepository buyerRepository;
 
     private final CommonService commonService;
@@ -28,11 +31,11 @@ public class BuyerService {
 
     public List<Buyer> getBuyers() {
         String agencyId = commonService.getAgencyId();
-        return getBuyersByAgencyId(agencyId);
+        return self.getBuyersByAgencyId(agencyId);
     }
 
     @Cacheable(value = "getBuyers", key = "#agencyId")
-    private List<Buyer> getBuyersByAgencyId(String agencyId) {
+    public List<Buyer> getBuyersByAgencyId(String agencyId) {
         List<Buyer> result = new ArrayList<>();
         buyerRepository.findAllByAgencyId(agencyId).forEach((buyerEntity) -> result.add(new Buyer(buyerEntity)));
         return result;

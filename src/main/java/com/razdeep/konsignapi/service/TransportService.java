@@ -15,6 +15,8 @@ import java.util.List;
 @Service
 public class TransportService {
 
+    @Autowired
+    private TransportService self;
 
     private final TransportRepository transportRepository;
 
@@ -68,11 +70,14 @@ public class TransportService {
         return resultList == null || resultList.isEmpty() ? null : resultList.get(0);
     }
 
-
-    @Cacheable(value = "getTransports")
     public List<Transport> getTransports() {
-        List<Transport> result = new ArrayList<>();
         String agencyId = commonService.getAgencyId();
+        return self.getTransports(agencyId);
+    }
+
+    @Cacheable(value = "getTransports", key = "#agencyId")
+    public List<Transport> getTransports(String agencyId) {
+        List<Transport> result = new ArrayList<>();
         transportRepository.findAllByAgencyId(agencyId).forEach((transportEntity) -> result.add(new Transport(transportEntity.getTransportId(), transportEntity.getTransportName())));
         return result;
     }
