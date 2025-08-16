@@ -4,7 +4,7 @@ RUN mkdir /src
 
 WORKDIR /src
 COPY . .
-RUN ./mvnw clean package
+RUN ./gradlew clean build
 
 # ----------------------------------------------
 
