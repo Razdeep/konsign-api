@@ -4,7 +4,7 @@ RUN mkdir /src
 
 WORKDIR /src
 COPY . .
-RUN ./gradlew clean build
+RUN chmod +x gradlew && ./gradlew clean build
 
 # ----------------------------------------------
 
