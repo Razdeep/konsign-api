@@ -20,33 +20,33 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("mysql:mysql-connector-java:8.0.30")
-    implementation("com.google.code.gson:gson:2.10")
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.security)
+    implementation(libs.jjwt)
+    implementation(libs.jaxb.api)
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.mysql.connector)
+    implementation(libs.gson)
 
-    compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
+    compileOnly(libs.lombok)
+    annotationProcessor(libs.lombok)
 
-    implementation("org.mapstruct:mapstruct:1.5.3.Final")
-    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.3.Final")
+    implementation(libs.mapstruct)
+    annotationProcessor(libs.mapstruct.processor)
 
-    implementation("org.springframework.boot:spring-boot-starter-actuator:3.0.1")
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.14")
+    implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.springdoc.openapi.ui)
 
-    implementation("org.springframework.boot:spring-boot-starter-data-redis:3.0.6")
-    implementation("redis.clients:jedis:3.9.0")
-    implementation("org.springframework.boot:spring-boot-starter-cache:2.4.3")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.0")
+    implementation(libs.spring.boot.starter.data.redis)
+    implementation(libs.jedis)
+    implementation(libs.spring.boot.starter.cache)
+    implementation(libs.jackson.jsr310)
 
-    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+    runtimeOnly(libs.micrometer.prometheus)
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.testcontainers:testcontainers:1.17.6")
-    testImplementation("org.testcontainers:mysql:1.17.6")
+    testImplementation(libs.spring.boot.starter.test)
+    testImplementation(libs.testcontainers)
+    testImplementation(libs.testcontainers.mysql)
 }
 
 tasks.test {
