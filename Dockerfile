@@ -4,7 +4,7 @@ RUN mkdir /src
 
 WORKDIR /src
 COPY . .
-RUN ./mvnw clean package
+RUN chmod +x gradlew && ./gradlew clean build
 
 # ----------------------------------------------
 
@@ -19,6 +19,6 @@ USER nonroot
 
 WORKDIR /home/nonroot/app
 
-COPY --from=builder /src/target/konsign-api-0.0.1-SNAPSHOT.jar /home/nonroot/app
+COPY --from=builder /src/build/libs/konsign-api-0.0.1-SNAPSHOT.jar /home/nonroot/app
 
 CMD ["java", "-Dspring.profiles.actives=dev", "-jar", "konsign-api-0.0.1-SNAPSHOT.jar"]
