@@ -1,24 +1,20 @@
-# konsign-api
+# <img src="assets/konsign_icon.png" alt="icon" width="30"/> Konsign Backend
 
-Springboot backend for konsign
+_Checkout frontend project: [here](https://github.com/Razdeep/konsign-ui)_
 
 
-### Setting up local development environment
 
-1. Login to the default mysql user
+## Development guide
+
+### Dependencies
+ - docker
+ - docker-compose
+ - java 17 / sdkman
+ - gradle
+
+### Setup
+
 ```bash
-sudo mysql
-```
-2. Create a new database called `konsign`
-```mysql
-CREATE DATABASE konsign;
-```
-3. Create a new user named `rajdeep` with password `rajdeep` after logging into the root mysql user
-```mysql
-CREATE USER 'rajdeep'@'localhost' IDENTIFIED BY 'rajdeep';
-```
-
-4. Grant all permissions to the new created user
-```mysql
-grant all privileges on konsign.* to 'rajdeep'@'localhost'; 
+docker-compose up
+./gradlew run
 ```
